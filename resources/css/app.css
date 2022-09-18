@@ -1,0 +1,298 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.cb-container {
+  position: relative;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Hide the browser's default checkbox */
+.cb-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  z-index: 3;
+}
+
+/* Create a custom checkbox */
+.cb-container .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+}
+
+/* On mouse-over, add a grey background color */
+.cb-container:hover input ~ .checkmark {
+  @apply bg-ms-gray-20 rounded-sm;
+}
+
+/* When the checkbox is checked, add a blue background */
+.cb-container input:checked ~ .checkmark {
+  @apply border bg-ms-gray-20 border-black rounded-sm;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all ease-in-out 300ms;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.panel-enter-active,
+.panel-leave-active,
+.panel-enter-active .panel,
+.panel-leave-active .panel{
+  transition: all 0.5s ease;
+}
+
+.panel-enter-from,
+.panel-leave-to{
+  opacity: 0;
+}
+
+.panel-enter-from .panel,
+.panel-leave-to .panel{
+  transform: translateX(100px);
+}
+
+[type='text']:focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{
+  @apply border-ms-cyan-120 ring-ms-cyan-10 !important;
+}
+
+.multiselect__tags{
+  border-radius: 2px !important;
+  @apply border border-ms-gray-110 h-10 !important;
+}
+.multiselect__tags:hover{
+  @apply border border-black !important;
+}
+
+.multiselect__tag{
+  @apply bg-ms-gray-30 text-ms-gray-160 rounded-none !important;
+}
+.multiselect__tag-icon:after{
+  @apply text-ms-gray-160 !important;
+}
+
+label{
+  @apply font-semibold mb-1;
+}
+.input{
+  @apply border border-ms-gray-110 text-ms-gray-160 rounded-sm h-10;
+}
+.input:hover{
+  @apply border-black;
+}
+.input:focus{
+  @apply ring-0 border-ms-cyan-120 !important;
+}
+
+.multiselect__input:focus{
+  @apply ring-0  !important;
+}
+
+.multiselect__option--highlight,
+.multiselect__option--highlight::after{
+  @apply bg-ms-gray-20 text-ms-gray-160 !important;
+}
+
+.multiselect__content-wrapper{
+  @apply shadow-lg border-0 !important;
+}
+
+.multiselect--active:not(.multiselect--above) .multiselect__current,
+.multiselect--active:not(.multiselect--above) .multiselect__input,
+.multiselect--active:not(.multiselect--above) .multiselect__tags {
+  border-radius: 0 !important;
+}
+
+.table{
+  @apply w-full text-left;
+}
+.table th,
+.table td{
+  @apply border-b border-ms-gray-30 p-3;
+}
+.table tr:not(.header):hover{
+  @apply bg-ms-gray-20;
+}
+
+.table.table-sm{
+  @apply w-full text-left text-sm;
+}
+.table.table-sm .header th{
+  @apply uppercase font-normal;
+}
+.table.table-sm th,
+.table.table-sm td{
+  @apply border-b border-ms-gray-30 p-2;
+}
+
+.pickr .pcr-button{
+  border: 1px solid #ccc;
+}
+
+
+.c-toast-container{
+  padding: 0;
+}
+
+.v--default-css .c-toast{
+  border-radius: 0 !important;
+  font-family: inherit !important;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  min-height: 4em;
+  font-size: 1.2em;
+  font-weight: 300;
+}
+
+@keyframes gradient {
+0% {
+  background-position: 0% 50%;
+}
+50% {
+  background-position: 100% 50%;
+}
+100% {
+  background-position: 0% 50%;
+}
+}
+
+.logo .logo-animate-gradient{
+  transition: cubic-bezier(0.64, 0.57, 0.67, 1.53) all 300ms;
+}
+
+.logo:hover .logo-text{
+  background: linear-gradient(-45deg, #004e8c, #038387, #c239b3, #8378de);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 4s ease infinite;
+  background-size: 200% 200%;
+}
+
+.logo:hover .logo-animate-gradient{
+  transform: scale(1.2);
+}
+
+.logo-animate-gradient{
+  background: linear-gradient(-45deg, #004e8c, #038387, #c239b3, #8378de);
+  background-size: 400% 400%;
+  animation: gradient 4s ease infinite;
+}
+
+.text-gradient{
+  background: linear-gradient(-45deg, #004e8c, #038387, #c239b3, #8378de);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.flex-table {
+    @apply flex flex-col w-full;
+}
+
+.flex-header{
+  @apply uppercase;
+}
+
+.flex-table-header,
+.flex-table-row {
+  @apply flex border-b h-9 items-center px-1 relative;
+}
+
+.flex-table-row:hover {
+  @apply bg-ms-gray-10;
+}
+.flex-table-header .col,
+.flex-table-row .col{
+  @apply flex-grow;
+}
+
+.filters-dropdown{
+  position: relative;
+}
+.filters-dropdown span{
+  @apply ml-1 mr-2 cursor-pointer border-b font-bold border-black border-dashed;
+}
+.filters-dropdown span:hover{
+  @apply text-ms-magenta-110;
+}
+.filters-dropdown aside{
+  display: none;
+}
+.filters-dropdown:hover aside{
+  display: flex;
+}
+.filters-dropdown aside{
+  top: -7px;
+  left: 4px;
+  @apply bg-white shadow-2xl absolute z-10;
+}
+.filters-dropdown ul{
+  position: relative;
+  @apply w-32;
+}
+.filters-dropdown ul li{
+  @apply p-2;
+}
+.filters-dropdown ul li:hover ul{
+  display: flex;
+  flex-direction: column;
+}
+.filters-dropdown ul li ul{
+  display: none;
+  position: absolute;
+  top: 0px;
+  @apply bg-white shadow-md w-32 left-24;
+}
+.filters-dropdown ul li ul li{
+  
+}
+.filters-dropdown ul li:hover{
+  @apply bg-ms-gray-20 cursor-pointer;
+}
+
+.is-dropdown{
+  position: relative;
+}
+.is-dropdown:hover ul{
+  display: block;
+}
+.is-dropdown ul{
+  position: absolute;
+  display: none;
+  right: 0;
+  min-width: 100%;
+  top: 44px;
+  background: #fff;
+  @apply shadow-lg;
+}
+.is-dropdown ul li{
+  @apply p-2;
+}
+.is-dropdown ul li:hover{
+  @apply bg-ms-magenta-20 text-white cursor-pointer;
+}

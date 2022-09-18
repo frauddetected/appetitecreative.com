@@ -1,0 +1,82 @@
+@import url('https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css');
+
+.tocify-wrapper{
+    background-color: #201f1e;
+}
+
+.content h1,
+.page-wrapper{
+    background-color: white;
+}
+
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6, body, html{
+    font-family: 'Segoe UI Web (West European)','Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,'Helvetica Neue',sans-serif;
+}
+
+.tocify-wrapper{
+    background: white;
+    color: #333;
+    box-shadow: 0 0 10px 4px rgba(0,0,0,0.1)
+}
+
+.tocify-wrapper .tocify-focus{
+    background: linear-gradient(to right, #038387, #8764b8)
+}
+
+.tocify-wrapper li, .tocify-wrapper ul{
+    line-height: 40px;
+}
+
+.tocify-wrapper li{
+    color: #333;
+    font-size: 1.05em;
+}
+
+.tocify-wrapper .tocify-subheader{
+    background: #eee;    
+}
+
+.tocify-wrapper .tocify-subheader .tocify-item>a{
+    font-size: 1.05em;
+}
+
+.tocify-wrapper .toc-footer{
+    border-top: 1px solid #eee;
+}
+
+.tocify-wrapper .toc-footer a, .tocify-wrapper .toc-footer li{
+    color: #aaa;
+}
+
+.tocify-wrapper>.search input{
+    background: #eee;
+    color: #aaa;
+    border: 0;
+}
+
+.content blockquote, .content pre{
+    background-color: #f3f2f1;
+    text-shadow: none;
+}
+
+.page-wrapper .dark-box{
+    background-color: #e1dfdd;
+}
+
+.content blockquote, .content pre{
+    color: #333;
+}
+
+.content h1{
+    background: linear-gradient(-45deg, #004e8c, #038387, #c239b3, #8378de);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+}
+
+.badge.badge-darkred{
+    background: #881798;
+}
+.badge.badge-black{
+    background: #00b7c3;
+}
