@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ApiSendMail;
+use App\Mail\ResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
@@ -204,6 +205,31 @@ class MainController extends Controller
     }
 
     /* Members */
+
+    public function authResetPassword()
+    {
+        $validated = $this->request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $project = Project::where('ucode', request('project_id'))->first();
+        $user = Member::whereProjectId($project->id)->whereEmail(request('email'))->first();
+        $password = Str::random(8);
+
+        if($user):
+            $user->password = Hash::make($password);
+            $user->save();
+
+            $author = request('from');
+            $subject = request('subject');
+            $tpl = request('tpl');
+
+            Mail::to($user->email)->send(new ResetPassword($user, $password, $project, $author, $subject, $tpl));
+            return response()->json(['success' => true]);
+        else:
+            return response()->json(['success' => false]);
+        endif;
+    }
 
     public function authLoginOrNew()
     {

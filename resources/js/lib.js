@@ -6,8 +6,8 @@ window.$link = class AppetiteLink
     static get instance() 
     {
         return axios.create({
-            //baseURL: 'https://query.appetite.link/api/',
-            baseURL: 'http://query.appetitelink:8000/api/',
+            baseURL: 'https://query.appetite.link/api/',
+            //baseURL: 'http://query.appetitelink:8000/api/',
             headers: {'Authorization': 'Bearer ' + this.token},
         });
     }
@@ -428,6 +428,17 @@ window.$link = class AppetiteLink
                     return JSON.parse(localStorage.getItem('authProfile'));
                 }
                 return null
+            },
+
+            resetPassword(email, mailconfig = {}){
+                return self.post('auth/resetPassword', { email: email, ...mailconfig });
+            },
+
+            logout(redirect = false){
+                localStorage.removeItem('authProfile');
+                if(redirect){
+                    window.location.href = redirect;
+                }
             },
 
             loginOrNew(params = {}){

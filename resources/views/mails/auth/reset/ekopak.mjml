@@ -1,0 +1,16 @@
+<mjml>
+    <mj-body background-color="#5e5140" color="#55575d" font-family="Arial, sans-serif">
+        <mj-section background-color="#5e5140" background-repeat="no-repeat" text-align="center" vertical-align="top" padding="0 0 0 0">
+            <mj-column>
+                <mj-image align="center" border="none" padding="20px" src="https://donsimon.connectedpackage.digital/don-simon-logo.svg" target="_blank" title="" width="160px"></mj-image>
+            </mj-column>
+        </mj-section>
+        <mj-section background-color="#5e5140" background-repeat="no-repeat" text-align="center" vertical-align="top" padding="0 0 0 0">
+            <mj-column>
+                <mj-text align="left" color="#fff" font-size="18px" line-height="22px" padding-bottom="20px" padding-top="0px" padding="50px">
+                    Hola
+                </mj-text>
+            </mj-column>
+        </mj-section>
+    </mj-body>
+</mjml>

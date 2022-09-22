@@ -36,6 +36,7 @@ Route::group(['domain' => env('DOMAIN_API'), 'prefix' => 'api'], function(){
     Route::post('/auth/register', [App\Http\Controllers\Api\MainController::class, 'authRegister'])->name('api.auth.register');
     Route::post('/auth/login', [App\Http\Controllers\Api\MainController::class, 'authLogin'])->name('api.auth.login');
     Route::post('/auth/loginOrNew', [App\Http\Controllers\Api\MainController::class, 'authLoginOrNew'])->name('api.auth.loginornew');
+    Route::post('/auth/resetPassword', [App\Http\Controllers\Api\MainController::class, 'authResetPassword'])->name('api.auth.resetpassword');
 
 });
 
