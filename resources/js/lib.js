@@ -560,14 +560,23 @@ window.$link = class AppetiteLink
     static get message()
     {
         const self = this;
+
         return{
-            listen(param){
-                window.addEventListener('message', event => {
-                    if(event.data.link){
-                        param(event.data.link);
-                    }
-                }, { passive: true });
+
+            handleMsg(param, event){
+                if(event.data.link){
+                    param(event.data.link)
+                }
             },
+
+            listen(param){
+                let handler = this.handleMsg.bind(this, param);
+                window.addEventListener('message', handler, false);
+                return () => {
+                    window.removeEventListener('message', handler);
+                }
+            },
+
             send(params){
                 if(window.frameElement){
                     window.parent.postMessage({
