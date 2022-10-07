@@ -38,6 +38,8 @@ Route::group(['domain' => env('DOMAIN_API'), 'prefix' => 'api'], function(){
     Route::post('/auth/loginOrNew', [App\Http\Controllers\Api\MainController::class, 'authLoginOrNew'])->name('api.auth.loginornew');
     Route::post('/auth/resetPassword', [App\Http\Controllers\Api\MainController::class, 'authResetPassword'])->name('api.auth.resetpassword');
 
+    Route::post('/crm/contact', [App\Http\Controllers\Api\MainController::class, 'crmContact'])->name('api.crm.lead');
+
 });
 
 

@@ -418,6 +418,21 @@ window.$link = class AppetiteLink
         }
     }
 
+    static get crm()
+    {
+        const self = this;
+        return{
+            contact(platform, params = {}){
+                return self.post('crm/contact', {
+                    crm: {
+                        platform: platform,
+                        ...params
+                    }
+                });
+            }
+        }
+    }
+
     static get auth()
     {
         const self = this;

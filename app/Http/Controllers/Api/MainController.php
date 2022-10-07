@@ -6,7 +6,7 @@ use Inertia\Inertia;
 use Auth;
 use App;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\LogAction;
@@ -705,5 +705,41 @@ class MainController extends Controller
             ] : null
         ];
 
+    }
+
+    public function crmContact()
+    {
+        $project = Project::where('ucode', $this->request->input('project_id'))->first();
+        $crm = request('crm');
+        $email = $crm['email'];
+        $platform = $crm['platform'];
+        $name = $crm['name'];
+
+        if($platform == 'salesmanago'){
+
+            $apiUrl = "https://www.salesmanago.pl/api/contact/upsert";
+                        
+            $data = [
+                "clientId" => "iek415ttonig7c9b",
+                "apiKey" => "vS5xJtNkrit9dL7X6d7f",
+                "sha" => "8ef232dfe52aecbde72a63628388b14fc32810c4",
+                "requestTime" => time() * 1000,
+                "owner" => "salesmanago@donsimon.com",
+                "contact" => [
+                    "email" => $email,
+                    "name" => $name,
+                ],
+                "forceOptIn" => true,
+                "tags" => [
+                    "CONNECTED_EXPERIENCE",
+                    "ELOPAK"
+                ]
+            ];
+
+            return Http::post($apiUrl, $data);
+
+        }
+
+        return ['success' => false];
     }
 }
