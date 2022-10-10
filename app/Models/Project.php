@@ -90,6 +90,11 @@ class Project extends Model
         return $this->hasMany(Participant::class);
     }
 
+    public function members()
+    {
+        return $this->hasMany(Member::class);
+    }
+
     public function leaderboard()
     {
         return $this->hasMany(Leaderboard::class);

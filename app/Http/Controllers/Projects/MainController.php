@@ -78,6 +78,7 @@ class MainController extends Controller
 
         $data['chart'] = $dailyEvents;
         $data['filter'] = request('filter');
+        $data['page'] = request('page') ?? 1;
 
         return Inertia::render('Projects/Logs', $data);
     }
@@ -114,6 +115,19 @@ class MainController extends Controller
         $name = Project::find($id)->name;
 
         return redirect()->to('/')->with("status","You are now looking at {$name}");
+    }
+
+    public function resetData()
+    {
+        $project = Project::find(current_project()->id);
+
+        current_project()->logs()->delete();
+        current_project()->users()->delete();
+        current_project()->participants()->delete();
+        current_project()->members()->delete();
+        current_project()->leaderboard()->delete();
+
+        return redirect()->back()->with("status","Data has been reset");
     }
 
     public function toggleLive()

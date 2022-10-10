@@ -132,6 +132,9 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
         /* Live / Test */
         Route::post('/view/live', [ProjectController::class, 'toggleLive'])->name('projects.live.toggle');
 
+        /* Reset Data */
+        Route::post('/reset/all', [ProjectController::class, 'resetData'])->name('projects.reset.data');
+
         /* Bearer Token */
         Route::post('/view/token', [ProjectController::class, 'updateToken'])->name('projects.token.update');
 

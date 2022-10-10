@@ -17,8 +17,8 @@
                 <button @click="save" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3">
                     Save
                 </button>
-                <button v-if="$page.props.user.admin" @click="deleteData" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3">
-                    Delete All Data
+                <button v-if="$page.props.user.admin" @click="resetData" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3">
+                    Reset All Data
                 </button>
             </nav>
         </template>
@@ -283,9 +283,9 @@
             {
                 this.$inertia.post(route('projects.live.toggle'))
             },
-            deleteData()
+            resetData()
             {
-
+                this.$inertia.post(route('projects.reset.data'))
             },
             generateToken()
             {

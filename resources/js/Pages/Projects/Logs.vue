@@ -23,29 +23,38 @@
 
                 <div class="w-10/12">
 
-                <div class="flex">
-                    <div class="w-4/12 pr-12">                        
-                        <line-chart height="260px" :colors="['#00bcf2','#881798']" :data="chart"></line-chart>
-                    </div>
-                    <div class="w-8/12">
+                        <div class="flex">
+                            <div class="w-4/12 pr-12">                        
+                                <line-chart height="260px" :colors="['#00bcf2','#881798']" :data="chart"></line-chart>
+                            </div>
+                            <div class="w-8/12">
 
-                        <table class="table">
-                            <tr class="header">
-                                <th>Event</th>
-                                <th>Values</th>
-                                <th></th>
-                            </tr>
-                            <tr v-for="log in logs.data">
-                                <td>
-                                    <span class="cursor-pointer text-ms-cyan-110 hover:text-ms-magenta-110" @click="filterName(log.name)">{{ log.name }}</span>
-                                </td>
-                                <td>{{ parseValues(log) }}</td>
-                                <td>{{ moment(log.created_at).fromNow() }}</td>
-                            </tr>
-                        </table>
+                                <table class="table">
+                                    <tr class="header">
+                                        <th>Event</th>
+                                        <th>Values</th>
+                                        <th></th>
+                                    </tr>
+                                    <tr v-for="log in logs.data">
+                                        <td>
+                                            <span class="cursor-pointer text-ms-cyan-110 hover:text-ms-magenta-110" @click="filterName(log.name)">{{ log.name }}</span>
+                                        </td>
+                                        <td v-html="parseValues(log)"></td>
+                                        <td>{{ moment(log.created_at).fromNow() }}</td>
+                                    </tr>
+                                </table>
 
-                    </div>
-                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full mt-4 flex justify-end">
+                            <a v-if="page>1" 
+                                :href="`/projects/logs?page=${parseInt(page)-1}`"
+                                class="border border-ms-gray-160 px-4 py-1 hover:bg-ms-gray-40 ml-2 font-bold">Prev</a>
+                            <a :href="`/projects/logs?page=${parseInt(page)+1}`"
+                                class="border border-ms-gray-160 px-4 py-1 hover:bg-ms-gray-40 ml-2 font-bold">Next</a>
+                        </div>
+
                 </div>
 
                 <SubsetOptions />
@@ -101,7 +110,7 @@
     export default {
         
         props: [
-            'logs', 'chart', 'filter'
+            'logs', 'chart', 'filter', 'page'
         ],
 
         data(){
@@ -123,6 +132,20 @@
                 window.location.search = decodeURIComponent(urlParams);
             },
             parseValues(log){
+                
+                // run through all values object
+                let values = log.values
+                let parsed = {}
+                for (const [key, value] of Object.entries(values)) {
+                    parsed[key] = value
+                }
+                
+                // return key + val, split within spans
+                return Object.keys(parsed).map((key, i) => {
+                    return `<span class="bg-ms-gray-30 px-2 rounded-2xl text-xs mr-2 mb-2">${key}</span> <span class="text-ms-cyan-20">${parsed[key]}</span>`
+                }).join('<br>')
+
+                /*
                 switch (log.name) {
                     case 'page_view':
                         return log.values.page_title
@@ -142,6 +165,7 @@
                     default:
                         break;
                 }
+                */
             }
         },
 
