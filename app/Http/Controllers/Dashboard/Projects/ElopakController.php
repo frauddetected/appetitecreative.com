@@ -283,14 +283,14 @@ class ElopakController extends MainController
                     'gender' => Cache::remember("stats.users.gender|$cachingPeriod", $ttl, function() use ($uniques){
                         $gender = [];
                         foreach($uniques as $t):
-                            array_push($gender, $t->gender);
+                            if($t->gender) array_push($gender, $t->gender);
                         endforeach;
                         return array_count_values($gender);
                     }),
                     'age' => Cache::remember("stats.users.age|$cachingPeriod", $ttl, function() use ($uniques){
                             $agerange = [];
                             foreach($uniques as $t):
-                                array_push($agerange, $t->agerange);
+                                if($t->agerange) array_push($agerange, $t->agerange);
                             endforeach;
                             return array_count_values($agerange);
                     }),
