@@ -6,7 +6,7 @@
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
               
                 <iframe 
@@ -15,7 +15,7 @@
                     scrolling="no" 
                     frameborder="0" 
                     loading="lazy" 
-                    style="width: 1px; min-width: 100%; height: 1900px;">
+                    style="width: 1px; min-width: 100%; height: 1760px;">
                 </iframe>
                     
             </div>

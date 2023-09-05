@@ -122,7 +122,7 @@ class MainController extends Controller
         $project = Project::find(current_project()->id);
 
         current_project()->logs()->delete();
-        current_project()->users()->delete();
+        //current_project()->users()->delete();
         current_project()->participants()->delete();
         current_project()->members()->delete();
         current_project()->leaderboard()->delete();

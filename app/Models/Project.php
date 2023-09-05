@@ -65,6 +65,16 @@ class Project extends Model
         return $this->hasMany(Prize::class);
     }
 
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
+
+    public function alphanum()
+    {
+        return $this->hasMany(AlphaNumCode::class);
+    }
+
     public function qr()
     {
         return $this->hasMany(QR::class);

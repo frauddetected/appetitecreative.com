@@ -484,7 +484,9 @@
                             v-tippy="{ content: `<div class='p-2'>${gender} <strong class='ml-2'>${count} (${calcPerc(count, totalGender)})</strong></div>`, followCursor: true }"
                             v-for="(count,gender) in stats.users.age" 
                             class="flex-table-row">
-                                <div class="col font-bold">{{ gender }}</div>
+                                <div v-if="gender==6" class="col font-bold">&lt; {{ gender }}</div>
+                                <div v-else-if="gender==50" class="col font-bold">> {{ gender }}</div>
+                                <div v-else class="col font-bold">{{ gender }}</div>
                                 <div class="col text-right">{{ count }}</div>
                                 <div :style="{ width: calcPerc(count, totalGender) }" class="duration-300 left-0 bottom-0 border-b-2 absolute border-ms-cyan-20"></div>
                         </div>

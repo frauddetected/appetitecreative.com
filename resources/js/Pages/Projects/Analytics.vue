@@ -65,6 +65,7 @@
                                         <input type="text" class="input" v-model="form.details.auth_code">
                                     </div>
                                 </div>
+                                <button @click="createPlausible">Create</button>
                             </div>
 
                             <!-- Google Analytics -->
@@ -132,6 +133,11 @@
         },
 
         methods: {
+            createPlausible(){
+                this.$inertia.post(route('projects.analytics.plausible', this.$page.props.project.id), this.form, {
+                    preserveState: true
+                })
+            },
             save(){
                 this.$inertia.post(route('projects.analytics.store', this.$page.props.project.id), this.form, {
                     preserveState: true

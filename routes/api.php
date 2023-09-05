@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['domain' => env('DOMAIN_API'), 'prefix' => 'api'], function(){
 
+    Route::get('/alphanum/{project}/view', [App\Http\Controllers\Api\MainController::class, 'alphaNumView'])->name('alphanum.external.views');
+    Route::get('/qrcodes/{project}/view', [App\Http\Controllers\Api\MainController::class, 'qrcodesViews'])->name('qrcodes.external.views');
+
     Route::post('/geo/ip', [App\Http\Controllers\Api\MainController::class, 'geo'])->name('api.qr.geo');
     
     Route::post('/qr/details', [App\Http\Controllers\Api\MainController::class, 'qrDetails'])->name('api.qr.details');
@@ -37,6 +40,9 @@ Route::group(['domain' => env('DOMAIN_API'), 'prefix' => 'api'], function(){
     Route::post('/auth/login', [App\Http\Controllers\Api\MainController::class, 'authLogin'])->name('api.auth.login');
     Route::post('/auth/loginOrNew', [App\Http\Controllers\Api\MainController::class, 'authLoginOrNew'])->name('api.auth.loginornew');
     Route::post('/auth/resetPassword', [App\Http\Controllers\Api\MainController::class, 'authResetPassword'])->name('api.auth.resetpassword');
+
+    Route::post('/articles/view', [App\Http\Controllers\Api\MainController::class, 'articlesView'])->name('api.articles.view');
+    Route::post('/articles/all', [App\Http\Controllers\Api\MainController::class, 'articlesAll'])->name('api.articles.all');
 
     Route::post('/crm/contact', [App\Http\Controllers\Api\MainController::class, 'crmContact'])->name('api.crm.lead');
 

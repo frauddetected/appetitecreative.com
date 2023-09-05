@@ -604,7 +604,7 @@
                                 class="flex-table-row">
                                     <div class="col font-bold">{{ gender }}</div>
                                     <div class="col text-right">{{ count }}</div>
-                                    <div :style="{ width: calcPerc(count, totalGender) }" class="duration-300 left-0 bottom-0 border-b-2 absolute border-ms-cyan-20"></div>
+                                    <div :style="{ width: calcPerc(count, totalGender) }" class="duration-300 left-0 bottom-0 border-b-2 absolute border-ms-magenta-110"></div>
                             </div>
                         </section>
 
@@ -619,7 +619,7 @@
                                 class="flex-table-row">
                                     <div class="col font-bold">{{ gender }}</div>
                                     <div class="col text-right">{{ count }}</div>
-                                    <div :style="{ width: calcPerc(count, totalGender) }" class="duration-300 left-0 bottom-0 border-b-2 absolute border-ms-cyan-20"></div>
+                                    <div :style="{ width: calcPerc(count, totalGender) }" class="duration-300 left-0 bottom-0 border-b-2 absolute border-ms-magenta-110"></div>
                             </div>
                         </section>
                         

@@ -6,7 +6,7 @@ import { InertiaProgress } from '@inertiajs/progress';
 
 // optional for styling
 import VueChartkick from 'vue-chartkick'
-import 'chartkick/chart.js'
+import 'chartkick/highcharts'
 
 import VueApexCharts from "vue3-apexcharts"
 import ModuleMixin from '@/Mixins/modules'
@@ -17,6 +17,8 @@ import 'v-tooltip/dist/v-tooltip.css'
 import VueTippy from 'vue-tippy'
 import 'tippy.js/dist/tippy.css'
 import 'tippy.js/themes/light.css'
+
+import 'v-calendar/style.css'
 
 import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"

@@ -57,6 +57,13 @@ class QuizController extends Controller
             $ca->save();
             return redirect()->back()->with('status','Answer edited!');
         endif;
+
+        if(request('changeAnswerContent')):
+            $ca = QuizAnswer::find(request('cid'));
+            $ca->content = request('changeAnswerContent');
+            $ca->save();
+            return redirect()->back()->with('status','Answer content edited!');
+        endif;
     }
 
     public function store()
@@ -68,6 +75,8 @@ class QuizController extends Controller
         $q->if_correct = request('if_correct');
         $q->if_incorrect = request('if_incorrect');
         $q->is_always_correct = request('is_always_correct') ? true : false;
+        $q->is_multi_answer = request('is_multi_answer') ? true : false;
+        $q->tags = request('tags');
         $q->source = request('source');
         $q->details = request('details');
         $q->project_id = $id;
@@ -83,6 +92,7 @@ class QuizController extends Controller
             if($answer['title']):
                 $a = new QuizAnswer;
                 $a->title = $answer['title'];
+                $a->content = isset($answer['content']) ? $answer['content'] : null;
                 $a->question_id = $q->id;
                 $a->is_correct = request('is_always_correct') ? true : $answer['is_correct'];
                 $a->save();

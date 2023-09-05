@@ -222,7 +222,7 @@ label{
 
 .flex-table-header,
 .flex-table-row {
-  @apply flex border-b h-9 items-center px-1 relative;
+  @apply flex border-b-2 border-white h-9 items-center px-1 relative;
 }
 
 .flex-table-row:hover {

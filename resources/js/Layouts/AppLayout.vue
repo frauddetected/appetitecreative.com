@@ -100,6 +100,7 @@
                                                     Switch Projects
                                                 </div>
 
+                                                <div class="h-96 overflow-hidden overflow-y-auto">
                                                 <template v-for="project in $page.props.user.projects_list" :key="project.id">
                                                     <form @submit.prevent="switchToProject(project)">
                                                         <jet-dropdown-link as="button">
@@ -116,7 +117,7 @@
                                                         </jet-dropdown-link>
                                                     </form>
                                                 </template>
-
+                                                </div>
                                             
                                         </div>
                                     </template>

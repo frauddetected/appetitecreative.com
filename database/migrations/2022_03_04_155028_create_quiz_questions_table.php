@@ -19,6 +19,8 @@ class CreateQuizQuestionsTable extends Migration
             $table->text('if_correct')->nullable();
             $table->text('if_incorrect')->nullable();
             $table->boolean('is_always_correct')->default(false);
+            $table->boolean('is_multi_answer')->default(false);
+            $table->json('tags')->nullable();
             $table->string('source')->nullable();
             $table->string('country')->nullable();
             $table->string('language')->nullable();

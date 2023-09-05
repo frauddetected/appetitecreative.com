@@ -44,6 +44,13 @@
                 <i class="ms-Icon ms-Icon--QRCode"></i>
             </Link>
             <Link 
+                :href="route('projects.alphanum.view')" 
+                :class="{ 'border-l-2 border-ms-cyan-120 bg-ms-gray-10' : route().current('projects.alphanum.view') }" 
+                class="hover:bg-ms-gray-20 hover:text-ms-cyan-120 py-2 px-3 flex items-center justify-between">
+                Alpha Codes
+                <i class="ms-Icon ms-Icon--QRCode"></i>
+            </Link>
+            <Link 
                 v-if="$page.props.user.admin"
                 :href="route('projects.quiz.view')" 
                 :class="{ 'border-l-2 border-ms-cyan-120 bg-ms-gray-10' : route().current('projects.quiz.view') }" 
@@ -58,6 +65,14 @@
                 class="hover:bg-ms-gray-20 hover:text-ms-cyan-120 py-2 px-3 flex items-center justify-between">
                 Prizes
                 <i class="ms-Icon ms-Icon--Trophy"></i>
+            </Link>
+            <Link 
+                v-if="$page.props.user.admin"
+                :href="route('projects.articles.view')" 
+                :class="{ 'border-l-2 border-ms-cyan-120 bg-ms-gray-10' : route().current('projects.articles.view') }" 
+                class="hover:bg-ms-gray-20 hover:text-ms-cyan-120 py-2 px-3 flex items-center justify-between">
+                Articles
+                <i class="ms-Icon ms-Icon--ReadingMode"></i>
             </Link>
             <Link 
                 v-if="$page.props.user.role.level <= 2"

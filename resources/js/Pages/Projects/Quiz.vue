@@ -65,10 +65,11 @@
                 <div class="d-flex align-items-center">
                     <input type="text" class="w-full" @change="changeQuestionTitle($event, selected.id)" :value="selected.title">
                 </div>
-                <ul class="list-group mt-2">
-                    <li class="list-group-item pl-6 py-2" v-for="a in selected.answers">
+                <ul class="grid grid-cols-2 gap-4 mt-4">
+                    <li class="flex flex-col gap-y-2 bg-gray-100 p-4" v-for="a in selected.answers">
                         <input type="text" class="w-full" @change="changeAnswerTitle($event, a.id)" :value="a.title">
-                        <div class="flex">
+                        <input type="text" class="w-full" @change="changeAnswerContent($event, a.id)" :value="a.content" placeholder="Additional">
+                        <div class="flex w-full justify-between">
                             <div class="form-check form-switch mt-2">
                                 <input class="form-check-input" @change="toggleCorrectAnswer($event, a.id)" type="checkbox" :checked="a.is_correct==true" :id="'flexSwitchCheckDefault'+a.id">
                                 <label class="form-check-label" :for="'flexSwitchCheckDefault'+a.id"> Is correct?</label>
@@ -99,15 +100,38 @@
                                 </div>
 
                                 <div class="flex my-3">
-                                    <div class="flex items-center w-2/12">
-                                        <input id="checkbox_always_correct" class="form-check-input mr-2" type="checkbox" v-model="form.is_always_correct">
-                                        <label for="checkbox_always_correct" class="form-check-label">Always correct?</label>
+                                    <div class="flex flex-col justify-center w-2/12">
+                                        <div class="flex mt-6">
+                                            <input id="checkbox_always_correct" class="form-check-input mr-2" type="checkbox" v-model="form.is_always_correct">
+                                            <label for="checkbox_always_correct" class="form-check-label">Always correct?</label>
+                                        </div>
+                                        <div class="flex">
+                                            <input id="checkbox_is_multianswer" class="form-check-input mr-2" type="checkbox" v-model="form.is_multi_answer">
+                                            <label for="checkbox_is_multianswer" class="form-check-label">Multi-Answer</label>
+                                        </div>
                                     </div>
-                                    <div class="flex flex-col w-5/12">
+                                    <div class="w-10/12">
+                                        <label for="" class="mb-2 block font-bold">Tags</label>
+                                        <VueMultiselect
+                                            v-model="form.tags"
+                                            :multiple="true"
+                                            :taggable="true"
+                                            :options="tags"
+                                            :searchable="true"
+                                            :close-on-select="false"
+                                            :show-labels="false"
+                                            placeholder="Select One or Many"
+                                            @tag="addTag"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-x-3">
+                                    <div class="flex flex-col w-6/12">
                                         <label class="font-bold" for="">If Correct</label>
                                         <textarea rows="1" class="w-full" v-model="form.if_correct"></textarea>
                                     </div>
-                                    <div class="flex flex-col w-5/12 ml-3">
+                                    <div class="flex flex-col w-6/12">
                                         <label class="font-bold" for="">If Incorrect</label>
                                         <textarea rows="1" class="w-full" v-model="form.if_incorrect"></textarea>
                                     </div>
@@ -173,9 +197,10 @@
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <div class="w-full bg-gray-100 flex flex-col items-end justify-center rounded-sm text-center py-2 px-4 border border-gray-300" v-for="(answer, index) in form.answers">
-
-                                            <input type="text" v-model="answer.title" class="w-full my-3" :placeholder="`Answer ${index+1}`">
+                                    <div  :class="answer.is_correct ? 'bg-green-100' : 'bg-gray-100'" class="w-full flex flex-col items-end justify-center rounded-sm text-center py-2 px-4 border border-gray-300" v-for="(answer, index) in form.answers">
+                                            
+                                            <input type="text" v-model="answer.title" class="w-full mt-3 mb-1" :placeholder="`Answer ${index+1}`">
+                                            <input type="text" v-model="answer.content" class="w-full mb-3" :placeholder="`Additional for ${index+1}`">
 
                                             <div class="w-6/12 text-right">
                                                 <div class="form-check form-switch mt-1 ml-auto">
@@ -225,11 +250,14 @@ export default {
     data(){
         return{
             addNewQuestion: false,
+            tags: [],
             form: this.$inertia.form({
                 title: null,
                 if_correct: null,
                 if_incorrect: null,
                 is_always_correct: null,
+                is_multi_answer: null,
+                tags: [],
                 source: null,
                 details: null,
                 source_id: null,
@@ -238,7 +266,7 @@ export default {
                 country: null,
                 language: null,
                 answers: [
-                    { title: '', is_correct: false }
+                    { title: '', content: '', is_correct: false }
                 ],   
             }),
             selected: null,
@@ -253,6 +281,10 @@ export default {
     },
 
     methods: {
+        addTag (newTag) {
+            this.tags.push(newTag)
+            this.form.tags.push(newTag)
+        },
         qrcode(id){
             let f = this.codes.filter(code => code.id == id)
             if(f.length){
@@ -275,6 +307,9 @@ export default {
         },
         changeAnswerTitle(ev, id){
             this.$inertia.post(route('projects.quiz.actions', { cid: id, changeAnswerTitle: ev.target.value }))
+        },
+        changeAnswerContent(ev, id){
+            this.$inertia.post(route('projects.quiz.actions', { cid: id, changeAnswerContent: ev.target.value }))
         },
         toggleCorrectAnswer(ev, id){
             this.$inertia.post(route('projects.quiz.actions', { cid: id, toggleCorrectAnswer: true, value: ev.target.checked }))

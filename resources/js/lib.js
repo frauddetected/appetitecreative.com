@@ -572,6 +572,27 @@ window.$link = class AppetiteLink
         }
     }
 
+    static get articles()
+    {
+        const self = this;
+        return{
+            view(params = {}){
+                return self.post('articles/view', {
+                    ...self.user,
+                    ...params,
+                    details: {...self.details,...params.details}
+                })
+            },
+            all(params = {}){
+                return self.post('articles/all', {
+                    ...self.user,
+                    ...params,
+                    details: {...self.details,...params.details}
+                })
+            }
+        }
+    }
+
     static get message()
     {
         const self = this;
@@ -592,15 +613,27 @@ window.$link = class AppetiteLink
                 }
             },
 
-            send(params){
+            sendOld(params){
                 if(window.frameElement){
                     window.parent.postMessage({
                         link: params
-                    });
+                    }, '*');
                 } else {
                     window.postMessage({
                         link: params
-                    });
+                    }, '*');
+                }
+            },
+
+            send(params, el = null){
+                if(el){
+                    el.postMessage({
+                        link: params
+                    }, '*');
+                } else {
+                    parent.window.postMessage({
+                        link: params
+                    }, '*');
                 }
             }
         }

@@ -9,11 +9,19 @@ class Quiz extends Model
     protected $table = 'quiz_questions';
     protected $guarded = ['id'];
 	protected $appends = array('total_answers_count');
+	protected $casts = [
+		'tags' => 'array',
+	];
 
 	public function answers()
 	{
 		return $this->hasMany(QuizAnswer::class, 'question_id');
 	}
+
+	public function results()
+    {
+        return $this->hasMany(QuizResult::class, 'question_id');
+    }
 
 	public function answersCount(){
 		return $this->answers()->sum('total_answers');

@@ -16,6 +16,7 @@ class CreateQuizAnswersTable extends Migration
         Schema::create('quiz_answers', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->text('content')->nullable();
             $table->integer('question_id');
             $table->boolean('is_correct')->default(false);
             $table->integer('total_answers')->default(0);

@@ -10,6 +10,8 @@ use App\Models\Project;
 use App\Models\User;
 use App\Models\Source;
 use App\Models\QR;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 use App\Http\Controllers\Projects\MainController as ProjectController;
 use App\Http\Controllers\Projects\AnalyticsController as AnalyticsController;
@@ -19,14 +21,20 @@ use App\Http\Controllers\Projects\QrController as QrController;
 use App\Http\Controllers\Projects\PrizesController as PrizesController;
 use App\Http\Controllers\Projects\SharingController as SharingController;
 use App\Http\Controllers\Projects\SourcesController as SourcesController;
+use App\Http\Controllers\Projects\ArticlesController as ArticlesController;
 
 use App\Http\Controllers\Dashboard\MainController as DashboardController;
 use App\Http\Controllers\Sharing\MainController as SharingMainController;
 use App\Http\Controllers\Go\MainController as GoMainController;
 
 use App\Http\Controllers\Api\MainController as ApiMainController;
+use App\Http\Controllers\Projects\AlphaController;
+use App\Models\AlphaNumCode;
+use App\Models\Leaderboard;
+use App\Models\Participant;
 use BaconQrCode\Encoder\QrCode;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+use GeoIp2\Database\Reader;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +49,18 @@ use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 #Route::mailPreview();
 
+Route::get('/changetable', function () {
+    #AlphaNumCode::truncate();
+    Schema::table('articles', function (Blueprint $table) {
+        $table->string('country')->nullable()->after('source_value');
+        $table->string('language')->nullable()->after('country');
+    });
+});
+
+Route::group(['domain' => env('DOMAIN_RAUCH')], function(){
+    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('rauch.redirect');    
+});
+
 Route::group(['domain' => env('DOMAIN_KDD')], function(){
     Route::get('/{id}', [GoMainController::class, 'redirect'])->name('kdd.redirect');    
 });
@@ -51,6 +71,79 @@ Route::group(['domain' => env('DOMAIN_GO')], function(){
 
 Route::group(['domain' => env('DOMAIN_SHARE')], function(){
     Route::get('/{project}/{selfie}', [SharingMainController::class, 'index'])->name('sharing.index');    
+});
+
+ function extractSurname($email, $firstName)
+{
+    // Split the email address at '@', and convert it to lowercase
+    $username = strtolower(explode('@', $email)[0]);
+
+    // Split the username at '.', or '_' and take the first or second part based on matching the first name
+    $delimiter = strpos($username, '.') !== false ? '.' : (strpos($username, '_') !== false ? '_' : '');
+    if (!empty($delimiter)) {
+        $usernameParts = explode($delimiter, $username);
+        if (count($usernameParts) > 1) {
+            if ($usernameParts[0] == strtolower($firstName)) {
+                $username = $usernameParts[1];
+            } else {
+                $username = $usernameParts[0];
+            }
+        } else {
+            $username = $usernameParts[0];
+        }
+    } else {
+        $username = $username;
+    }
+
+    // Remove the first name from the username, if it exists there
+    $username = str_replace(strtolower($firstName), '', $username);
+
+    // Remove special characters and numbers
+    $username = preg_replace("/[^a-zA-Z]/", "", $username);
+
+    // Trim whitespace and capitalize the first letter
+    $username = trim($username);
+    $username = ucfirst($username);
+
+    // If the resulting string is empty, return a random Austrian/German surname
+    if (empty($username)) {
+        //$surnames = ['Müller', 'Schmidt', 'Schneider', 'Fischer', 'Weber', 'Meyer', 'Wagner', 'Becker'];
+        //$username = $surnames[array_rand($surnames)];
+        $username = "";
+    }
+
+    return $username;
+}
+
+
+
+
+function isJson($string) {
+    if(!is_string($string)) return false;
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
+
+Route::get('/surnames2', function(){
+    echo extractSurname('alhaas54@gmail.com', 'Lina');
+});
+
+Route::get('/surnames', function(){
+    Participant::whereProjectId(26)->chunk(400, function ($participants) {
+        foreach ($participants as $participant) {
+            if(!$participant->profile) continue;
+            $profile = ($participant->profile);
+            if(!isset($profile->name)) continue;
+            $profile->surname = extractSurname(trim($profile->email), trim($profile->name));
+            $participant->profile = json_encode($profile);
+            $participant->save();
+        }
+    });
+});
+
+Route::get('/geoip', function(){
+    //$reader = new Reader(storage_path('app/geolite/GeoLite2-City.mmdb'));
+    //$record = $reader->city(request()->ip());
 });
 
 Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function(){
@@ -141,6 +234,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
         /* Analytics */
         Route::get('/view/analytics', [AnalyticsController::class, 'view'])->name('projects.analytics.view');
         Route::post('/view/analytics', [AnalyticsController::class, 'store'])->name('projects.analytics.store');
+        Route::post('/view/analytics/plausible', [AnalyticsController::class, 'plausible'])->name('projects.analytics.plausible');
 
         /* i18n */
         Route::get('/view/i18n', [I18NController::class, 'view'])->name('projects.i18n.view');
@@ -149,18 +243,29 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
         /* Quiz */
         Route::get('/view/quiz', [QuizController::class, 'view'])->name('projects.quiz.view');
         Route::post('/view/quiz', [QuizController::class, 'store'])->name('projects.quiz.store');
-        Route::post('/view/actions', [QuizController::class, 'actions'])->name('projects.quiz.actions');
+        Route::post('/view/quiz/actions', [QuizController::class, 'actions'])->name('projects.quiz.actions');
     
         /* QR */
         Route::get('/view/qr', [QrController::class, 'view'])->name('projects.qr.view');
         Route::post('/view/qr', [QrController::class, 'store'])->name('projects.qr.store');
+        Route::post('/view/qrbulk', [QrController::class, 'bulkStore'])->name('projects.qr.bulkStore');
         Route::post('/view/qr/details/upload', [QrController::class, 'detailsUpload'])->name('projects.qr.details.upload');
         Route::post('/view/qr/details/add', [QrController::class, 'detailsAdd'])->name('projects.qr.details.add');
         Route::post('/view/qr/details/save', [QrController::class, 'detailsSave'])->name('projects.qr.details.save');
     
+        /* Alpha Num */
+        Route::get('/view/alphanum', [AlphaController::class, 'view'])->name('projects.alphanum.view');
+        Route::post('/view/alphanum', [AlphaController::class, 'store'])->name('projects.alphanum.store');
+
         /* Prizes */
         Route::get('/view/prizes', [PrizesController::class, 'view'])->name('projects.prizes.view');
         Route::post('/view/prizes', [PrizesController::class, 'store'])->name('projects.prizes.store');
+
+        /* Articles */
+        Route::get('/view/articles', [ArticlesController::class, 'view'])->name('projects.articles.view');
+        Route::post('/view/articles', [ArticlesController::class, 'store'])->name('projects.articles.store');
+        Route::post('/view/articles/upload', [ArticlesController::class, 'upload'])->name('projects.articles.upload');
+        Route::post('/view/actions', [ArticlesController::class, 'actions'])->name('projects.articles.actions');
 
         /* Sharing */
         Route::get('/view/sharing', [SharingController::class, 'view'])->name('projects.sharing.view');
@@ -179,7 +284,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
 Route::get('/feed', function () {
 
 
-
+return 1;
     
     /*
     $p = new Project;

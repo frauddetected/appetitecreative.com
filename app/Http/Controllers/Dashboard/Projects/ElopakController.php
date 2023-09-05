@@ -292,20 +292,26 @@ class ElopakController extends MainController
                             foreach($uniques as $t):
                                 if($t->agerange) array_push($agerange, $t->agerange);
                             endforeach;
+                            ksort($agerange);
                             return array_count_values($agerange);
                     }),
                     'top_coins' => Cache::remember("stats.users.coins|$cachingPeriod", $ttl, function() use ($period){
-                        
-                        return current_project()->members()
+    
+                        $members = current_project()->members()
                             ->groupBy('email')
                             ->whereBetween('created_at', [$period['start'], $period['end']])
-                            ->orderBy('details->coins','desc')
                             ->get(array(
                                 'name',
                                 'email',
                                 'details->coins as coins'
-                            ));
-
+                            ))->toArray();
+                    
+                        usort($members, function($a, $b) {
+                            return $b['coins'] <=> $a['coins'];
+                        });
+                    
+                        return collect($members)->take(8);
+                    
                     }),
                     'avg_plays' => Cache::remember("stats.users.avg_plays|$cachingPeriod", $ttl, function() use ($period){
                         
@@ -455,5 +461,115 @@ class ElopakController extends MainController
         $data['charts'] = [];
 
         return Inertia::render('Dashboard/Projects/Elopak/Index', $data);
+    }
+
+    public function exportEmails()
+    {
+        if(request('period') != 'all'):
+            $period = explode("@", request('period'));
+            $startDate = Carbon::parse($period[0]);
+            $endDate = Carbon::parse($period[1])->endOfDay();
+            $filename = "emails_period_$period[0]_$period[1].xlsx";
+        else:
+            $startDate = Carbon::now()->subYear(1);
+            $endDate = Carbon::now();
+            $filename = "emails_all.xlsx";
+        endif;
+
+        function emailsGenerator($startDate, $endDate)
+        {
+            $uniques = current_project()
+                        ->members()
+                        ->groupBy('email')
+                        ->whereBetween('created_at', [$startDate, $endDate])
+                        ->get();
+            
+            foreach($uniques as $participant):
+                yield $participant;
+            endforeach;
+        }
+
+        return (new FastExcel(emailsGenerator($startDate, $endDate)))->download($filename, function ($item) {
+
+            $export['Name'] = isset($item->name) ? $item->name : null;
+            $export['E-mail'] = isset($item->email) ? $item->email : null;
+            $export['Coins'] = isset($item->details->coins) ? $item->details->coins : null;
+            $export['Tickets'] = isset($item->details->tickets) ? $item->details->tickets : null;
+	        $export['Date'] = $item->created_at->format('Y-m-d');
+            $export['Date / Time'] = $item->created_at->format('Y-m-d H:i:s');
+        
+            return $export;
+        });
+
+    }
+
+    public function exportDaily()
+    {
+        if(request('period') != 'all'):
+            $period = explode("@", request('period'));
+            $startDate = Carbon::parse($period[0]);
+            $endDate = Carbon::parse($period[1])->endOfDay();
+            $filename = "daily_period_$period[0]_$period[1].xlsx";
+        else:
+            $startDate = Carbon::now()->subYear(1);
+            $endDate = Carbon::now();
+            $filename = "daily_all.xlsx";
+        endif;
+
+        $scans_daily = current_project()
+            ->logs()
+            ->where('name','scan_qr')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get(array(
+                DB::raw('Date(created_at) as date'),
+                DB::raw('COUNT(*) as "views"')
+            ));
+
+        $visitors_daily = current_project()
+            ->participants()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get(array(
+                DB::raw('Date(created_at) as date'),
+                DB::raw('COUNT(*) as "views"')
+            ));
+
+        $registrations_daily = current_project()
+            ->participants()
+            ->where('profile->email','!=',null)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get(array(
+                DB::raw('Date(created_at) as date'),
+                DB::raw('COUNT(DISTINCT( JSON_EXTRACT(`profile` , \'$."email"\') )) as "views"')
+            ));
+
+        $results = [];
+
+        foreach($scans_daily as $sd){
+            $results[$sd['date']]['date'] = $sd['date'];
+            $results[$sd['date']]['scans'] = $sd['views'];
+        }  
+
+        /*
+        foreach($visitors_daily as $sd){
+            $results[$sd['date']]['date'] = $sd['date'];
+            $results[$sd['date']]['visitors'] = $sd['views'];
+        }  
+        */
+
+        foreach($registrations_daily as $sd){
+            $results[$sd['date']]['date'] = $sd['date'];
+            $results[$sd['date']]['registrations'] = $sd['views'];
+        } 
+
+        $collect = collect($results)->sortByDesc('date');
+
+        return (new FastExcel($collect))->download($filename);
+
     }
 }

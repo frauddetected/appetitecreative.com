@@ -40,15 +40,8 @@
 
     <div class="text-center min-h-screen flex flex-col items-center justify-center">
         
-        @if($project->sharing->messages->share->{$locale})
-            <h1 class="font-bold text-lg mb-2">{{ $project->sharing->messages->share->{$locale} }}</h1>
-        @endif
-
         <img src="https://share.appetite.link/media/selfies/{{ $selfie }}.png" class="w-9/12 xl:w-3/12" style="border: 10px solid {{ $project->sharing->style->secondary_color }}" alt="">
-        
-        @if(isset($project->sharing->messages->go->{$locale}))
-            <a href="{{ $project->domain }}" class="bg-secondary text-primary rounded-sm py-2 px-4 mt-4">{{ $project->sharing->messages->go->{$locale} }}</a>
-        @endif
+        <a href="{{ $project->domain }}" class="bg-secondary text-primary rounded-sm py-2 px-4 mt-4">Visit {{ $project->name }}</a>
 
     </div>
 

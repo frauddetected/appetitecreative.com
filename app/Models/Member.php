@@ -22,4 +22,13 @@ class Member extends Model
             return $query;
         endif;
     }
+
+    public function scopeCountry($query, $value)
+    {
+        if($value != 'All'):
+            return $query->where('details->country', $value);
+        else:
+            return $query;
+        endif;
+    }
 }

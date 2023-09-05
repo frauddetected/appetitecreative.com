@@ -6,6 +6,10 @@ use Inertia\Inertia;
 use Auth;
 use App;
 use DB;
+use Illuminate\Support\Facades\Cache;
+
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Freq;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -39,22 +43,15 @@ class MainController extends Controller
 
     public function activity()
     {
-        
 
-        $lb = current_project()->participants()->where('source_id', '=', 1)->get();
-        foreach ($lb as $l):
-            echo $l->id;
-        endforeach;
-
+        /*
+        Schema::table('quiz_questions', function ($table) {
+            $table->json('tags')->nullable()->after('is_multi_answer');
+        });
         die;
+        */
 
         $data['auth'] = AuthenticationLog::orderBy('id','desc')->with('user')->limit(20)->get();
-       
-        Schema::table('leaderboard', function ($table) {
-            $table->string('source_campaign')->nullable()->after('source_value');
-        });
-        
-        
         return Inertia::render('Dashboard/Activity', $data);
     }
 
@@ -84,6 +81,50 @@ class MainController extends Controller
     }
 
     public function insights()
+    {
+        $ttl = 0; // for now
+
+        $period = [
+            'start' => Carbon::now()->subDays(7),
+            'end' => Carbon::now(),
+        ];
+
+        $scans_count = current_project()->logs()->where('name','scan_qr')->whereBetween('created_at', [$period['start'], $period['end']])->get()->count();
+        $scans_avg_per_day = $scans_count / Carbon::now()->diffInDays($period['start']);
+        
+        $previous_period = [
+            'start' => Carbon::now()->subDays(14),
+            'end' => Carbon::now()->subDays(7),
+        ];
+
+        $previous_scans_count = Cache::remember("stats.scans.count", $ttl, function() use ($previous_period){
+            return current_project()->logs()->where('name','scan_qr')->whereBetween('created_at', [$previous_period['start'], $previous_period['end']])->get()->count();
+        });
+        
+        if ($previous_scans_count > 0) {
+            $percentage_increase = ($scans_count - $previous_scans_count) / $previous_scans_count * 100;
+        } else {
+            $percentage_increase = 0;
+        }
+
+        $message = "Over the past 7 days there was an average of " . number_format($scans_avg_per_day) . " daily scans. ";
+        if ($percentage_increase > 0) {
+            $message .= "That represents an overall increase of " . number_format($percentage_increase, 2) . "% versus the previous week.";
+        } else {
+            $message .= "That represents an overall decrease of " . number_format(abs($percentage_increase), 2) . "% versus the previous week.";
+        }
+        
+        $data = [
+            'message' => $message,
+            'scans_count' => $scans_count,
+            'scans_avg_per_day' => $scans_avg_per_day,
+            'percentage_increase' => $percentage_increase,
+        ];
+
+        return Inertia::render('Dashboard/Insights', ['data' => $data]);
+    }
+
+    public function insights2()
     {
         $data = array();
         return Inertia::render('Dashboard/Insights', $data);

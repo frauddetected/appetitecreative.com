@@ -8,7 +8,11 @@
             <nav class="flex" v-if="$page.props.user.role.level <= 1">
                 <button 
                     @click="addNewCode=true" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
-                    <i class="ms-Icon ms-Icon--Add mr-2"></i> Add
+                    <i class="ms-Icon ms-Icon--Add mr-2"></i> New
+                </button>
+                <button 
+                    @click="addNewBulk=true" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
+                    <i class="ms-Icon ms-Icon--Add mr-2"></i> Bulk Generate
                 </button>
             </nav>
         </template>
@@ -21,7 +25,23 @@
                 <div class="flex">
                     <div class="w-4/12 pr-12">
                         <h2 class="text-xl">QR Codes</h2>
-                        <p>...</p>
+                        
+                        <ul class="mt-5">
+                            <li>{{ codestats.total }} Total QRs</li>
+                            <li v-if="codestats.unique" class="mt-4">{{ codestats.total - codestats.unique }} standard QRs</li>
+                            <li v-if="codestats.unique">{{ codestats.unique }} unique QRs</li>
+                            <li v-if="codestats.unique" class="mt-4">
+                                {{ codestats.burned }} burned QRs
+                                ({{  Math.round((codestats.burned / codestats.unique) * 100) }}%)
+                            </li>
+                        </ul>
+
+                        <nav v-if="codestats.unique" class="flex gap-x-4 mt-4 pt-4 border-t text-xs">
+                            <a target="_blank" class="text-ms-magenta-10" :href="`https://query.appetite.link/api/qrcodes/${project_id}/view?type=array`">API</a>
+                            <a target="_blank" class="text-ms-magenta-10" :href="`https://query.appetite.link/api/qrcodes/${project_id}/view?type=csv`">CSV</a>
+                            <a target="_blank" class="text-ms-magenta-10" :href="`https://query.appetite.link/api/qrcodes/${project_id}/view?type=txt`">Text</a>
+                        </nav>
+                        
                     </div>
                     <div class="w-8/12">
 
@@ -30,19 +50,26 @@
                                 <th>Title</th>
                                 <th class="text-center">Keyword</th>
                                 <th class="text-center">Scans</th>
+                                <th v-if="codestats.unique" class="text-center">Total / Unique</th>
+                                <th v-if="codestats.unique" class="text-center">Burned</th>
                                 <th class="w-8"></th>
                                 <th class="w-8"></th>
                             </tr>
-                            <tr v-for="code in codes">
+                            <tr v-for="code in codes.data">
                                 <td>{{ code.title }}</td>
                                 <td class="text-center">
-                                    {{ code.keyword }}
+                                    {{ code.is_unique ? '-' : code.keyword }}
                                 </td>
-                                <td class="text-center">{{ code.scans }}</td>
-                                <td>
+                                <td class="text-center">{{ code.is_unique ? '-' : code.scans }}</td>
+                                <td v-if="codestats.unique" class="text-center">{{ code.is_unique ? code.total.toLocaleString('en-US') : '-' }}</td>
+                                <td v-if="codestats.unique" class="text-center">{{ code.is_unique ? code.burned : '-' }}</td>
+                                <td v-if="!code.is_unique">
                                     <i @click="previewQR=code.keyword" class="ms-Icon ms-Icon--QRCode cursor-pointer hover:text-ms-cyan-110"></i>
                                 </td>
-                                <td>
+                                <td v-else class="text-xs">
+                                    <a target="_blank" class="text-ms-magenta-10" :href="`https://query.appetite.link/api/qrcodes/${project_id}/view?type=array?filter=${code.title.replace(' ', '+')}`">API</a>
+                                </td>
+                                <td v-if="!code.is_unique">
                                     <VDropdown :autoHide="false" placement="right-start" v-if="$page.props.user.role.level <= 1">
                                         <span class=""><i class="ms-Icon ms-Icon--Dataflows cursor-pointer hover:text-ms-cyan-110"></i></span>
                                         <template #popper>
@@ -88,6 +115,9 @@
                                             </div>
                                         </template>
                                     </VDropdown>
+                                </td>
+                                <td v-else class="text-xs">
+                                    <a target="_blank" class="text-ms-magenta-10" :href="`https://query.appetite.link/api/qrcodes/${project_id}/view?type=csv?filter=${code.title.replace(' ', '+')}`">CSV</a>
                                 </td>
                             </tr>
                         </table>
@@ -215,6 +245,89 @@
                 
             </jet-dialog-modal>
 
+            <!-- Generate Bulk QR Codes -->
+            <jet-dialog-modal maxWidth="4xl" :show="addNewBulk" @close="addNewBulk=0">
+                <template #title>
+                    Generate Bulk QR Codes
+                </template>
+
+                <template #content>
+
+                    <div class="flex gap-x-2">
+                        <div class="flex flex-col w-full">
+                            <label for="">Title</label>
+                            <input v-model="formBulk.title" type="text" class="input">
+                        </div>
+
+                        <div v-if="$page.props.user.admin==1" class="flex flex-col w-full">
+                            <label for="">Quantity</label>
+                            <input type="text" v-model="formBulk.quantity" class="input">
+                        </div>
+
+                        <div class="flex flex-col w-full">
+                            <label for="">Single Usage (Burn)</label>
+                            <select v-model="formBulk.unique" class="input">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex mt-4">
+                        <div class="flex flex-col w-full mr-2">
+                            <label for="">Source</label>
+                            <VueMultiselect
+                                v-model="formBulk.source"
+                                :options="project.sources"
+                                :multiple="false"
+                                :close-on-select="true"
+                                placeholder="Select One"
+                                label="title"
+                                track-by="id"
+                            />
+                        </div>
+                        <div class="flex flex-col w-full mr-2" v-if="countries">
+                            <label for="">Country</label>
+                            <VueMultiselect
+                                v-model="formBulk.country"
+                                :options="countries"
+                                :multiple="false"
+                                :close-on-select="true"
+                                placeholder="Select One"
+                                label="name"
+                                track-by="code"
+                            />
+                        </div>
+
+                        <div class="flex flex-col w-full" v-if="languages">
+                            <label for="">Language</label>
+                            <VueMultiselect
+                                v-model="formBulk.language"
+                                :options="languages"
+                                :multiple="false"
+                                :close-on-select="true"
+                                placeholder="Select One"
+                                label="name"
+                                track-by="code"
+                            />
+                        </div>
+                    </div>
+                    
+                </template>
+
+                <template #footer>
+                    <div v-if="project.sources.length">
+                        <button v-if="!savingBulk" @click="saveBulk" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
+                        <button v-else class="text-white py-2 px-4 mr-2 font-semibold cursor-wait bg-ms-magenta-110">Generating...</button>
+                        <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                    </div>
+                    <div v-else>
+                        Add Sources Before Save
+                    </div>
+                </template>
+                
+            </jet-dialog-modal>
+
 </template>
 
 <script>
@@ -228,7 +341,10 @@
     export default {
         
         props: [
-            'project'
+            'codes',
+            'project',
+            'codestats',
+            'project_id'
         ],
 
         data(){
@@ -236,8 +352,10 @@
                 darkColor: '',
                 lightColor: '',
                 addNewCode: false,
+                addNewBulk: false,
                 addNewParam: false,
                 previewQR: null,
+                savingBulk: false,
                 form: this.$inertia.form({
                     title: '',
                     parent_id: '',
@@ -246,19 +364,27 @@
                     language: '',
                     country: '',
                 }),
+                formBulk: this.$inertia.form({
+                    title: '',
+                    unique: 1,
+                    quantity: 10_000,
+                    source: '',
+                    language: '',
+                    country: '',
+                }),
                 languages: [],
                 countries: [],
-                codes: []
             }
         },
 
         created(){
             this.languages = this.project.i18n && this.project.i18n.languages
             this.countries = this.project.i18n && this.project.i18n.countries
-            this.codes = this.project.qr
         },
 
         mounted(){
+
+            console.log('this.codes', this.codes)
 
             if(this.project.qr){
                 this.project.qr.forEach(item => {
@@ -335,6 +461,18 @@
                         this.addNewCode = false
                         this.form.reset()
                         this.codes = this.project.qr                    
+                    }
+                })
+            },
+            saveBulk(){
+                this.savingBulk = true
+                this.formBulk.post(route('projects.qr.bulkStore'), {
+                    preserveState: true,
+                    onSuccess: () => {
+                        this.addNewBulk = false
+                        this.formBulk.reset()
+                        this.codes = this.project.qr       
+                        this.savingBulk = false             
                     }
                 })
             },

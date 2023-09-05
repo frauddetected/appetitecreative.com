@@ -20,6 +20,7 @@ use App\Models\Member;
 use App\Models\Participant;
 use App\Models\Leaderboard;
 use App\Models\Prize;
+use App\Models\AlphaNumCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -27,15 +28,17 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ApiSendMail;
 use App\Mail\ResetPassword;
+use App\Models\Article;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class MainController extends Controller
 {
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->middleware('bearer');
+        $this->middleware('bearer')->except(['geo', 'alphaNumView', 'qrcodesViews']);
     }
 
     public function testAPI()
@@ -77,11 +80,12 @@ class MainController extends Controller
         $participant = Participant::firstOrNew(['sessid' => $this->request->sessid, 'project_id' => $project->id]);
         $participant->save();
 
-        $question = QuizAnswer::find(request('answer'));
+        $answer = QuizAnswer::find(request('answer'));
+        $answer->increment('total_answers');
 
 		$log = new QuizResult();
-		$log->question_id = $question->id;
-		$log->answer_id = request('answer');
+		$log->question_id = $answer->question_id;
+		$log->answer_id = $answer->id;
 		//$log->is_correct = request('is_correct');
         $log->details = $this->request->input('details') ? json_encode($this->request->input('details')) : null;
         $log->source_id = $this->request->source_id ?? null;
@@ -93,28 +97,36 @@ class MainController extends Controller
         $log->user_id = $participant->id;
 		$log->save();
 
-		$answer = QuizAnswer::find(request('answer'));
-		$answer->increment('total_answers');
+		
     }
 
     public function quizRandom()
     {
         $validated = $this->request->validate([
             'filter.*' => 'in:source_value,source_id,language,country',
+            'filter.source_value' => 'string',
+            'filter.source_id' => 'string',
+            'filter.language' => 'string',
+            'filter.country' => 'string',
             'filter' => 'array',
             'not__in' => 'array',
             'skip' => 'integer',
-            'limit' => 'integer'
+            'limit' => 'integer',
+            'tags' => 'string'
         ]);
 
         $project = Project::where('ucode', request('project_id'))->first();
 
         $question = $project->quiz();
         
-        if(request('filter')):
-            foreach (request('filter') as $filter):
-                $question = $question->where($filter, request($filter));
+        if($this->request->input('filter')):
+            foreach($this->request->input('filter') as $key => $value):
+                $question = $question->where($key, $value);
             endforeach;
+        endif;
+
+        if(request('tags')):
+            $question = $question->where('tags', 'like', '%'.request('tags').'%');
         endif;
 
         if(request('not__in')):
@@ -140,7 +152,7 @@ class MainController extends Controller
 
         if($question):
             return [
-                'question' => $questionRand->only(['id','title','answers','is_always_correct','if_correct','if_incorrect']),
+                'question' => $questionRand->only(['id','title','answers','is_always_correct','is_multi_answer','if_correct','if_incorrect']),
                 'total' => $question->count(),
                 'answered' => request('not__in') ? count(request('not__in')) : 0
             ];
@@ -153,6 +165,10 @@ class MainController extends Controller
     {
         $validated = $this->request->validate([
             'filter.*' => 'in:source_value,source_id,language,country',
+            'filter.source_value' => 'string',
+            'filter.source_id' => 'string',
+            'filter.language' => 'string',
+            'filter.country' => 'string',
             'filter' => 'array',
             'not__in' => 'array'
         ]);
@@ -161,13 +177,25 @@ class MainController extends Controller
 
         $question = $project->quiz();
         
-        if(request('filter')):
-            foreach (request('filter') as $filter):
-                $question = $question->where($filter, request($filter));
+        if($this->request->input('filter')):
+            foreach($this->request->input('filter') as $key => $value):
+                $question = $question->where($key, $value);
             endforeach;
         endif;
+
+        if(request('tags')):
+            $question = $question->where('tags', 'like', '%'.request('tags').'%');
+        endif;
+
+        if(request('random')):
+            $question = $question->with(['answers' => function($a){
+                $a->inRandomOrder();
+            }]);
+        else:
+            $question = $question->with('answers');
+        endif;
         
-        $question = $question->with('answers')->get();
+        $question = $question->get();
 
 		return [
             'question' => $question,
@@ -180,6 +208,10 @@ class MainController extends Controller
         $validated = $this->request->validate([
             'id' => 'required|integer',
             'filter.*' => 'in:source_value,source_id,language,country',
+            'filter.source_value' => 'string',
+            'filter.source_id' => 'string',
+            'filter.language' => 'string',
+            'filter.country' => 'string',
             'filter' => 'array',
             'not__in' => 'array'
         ]);
@@ -189,10 +221,14 @@ class MainController extends Controller
         $next = $project->quiz()->where('id', '>', request('id'))->min('id');
         $question = $project->quiz();
         
-        if(request('filter')):
-            foreach (request('filter') as $filter):
-                $question = $question->where($filter, request($filter));
+        if($this->request->input('filter')):
+            foreach($this->request->input('filter') as $key => $value):
+                $question = $question->where($key, $value);
             endforeach;
+        endif;
+
+        if(request('tags')):
+            $question = $question->where('tags', 'like', '%'.request('tags').'%');
         endif;
         
         $question->with('answers')->find($next);
@@ -434,6 +470,7 @@ class MainController extends Controller
         //    return ['error' => true, 'message' => 'Invalid token', 'ts' => $token, 'number' => $this->request->number];
         //endif;
 
+        $count_entries = 0;
         $project = Project::where('ucode', $this->request->input('project_id'))->first();
         
         # update participant
@@ -453,6 +490,36 @@ class MainController extends Controller
             endif;
         endif;
 
+        # Rauch #
+        if($project->id == 26):
+            
+            $current_origin = $this->request->input('origin_value');
+            $origins = ['popup','quiz','share'];
+
+            // if origin is not, return error
+            if(!in_array($current_origin, $origins)):
+                return ['error' => true, 'message' => 'Invalid origin'];
+            endif;
+
+            $sources = Leaderboard::where('project_id', $project->id)
+                        ->where('email', $this->request->input('email'))
+                        ->whereDate('created_at', Carbon::today())
+                        ->whereIn('origin_value', [$current_origin])
+                        ->get();
+            
+                        $count_entries = Leaderboard::where('project_id', $project->id)->where('email', $this->request->input('email'))->whereDate('created_at', Carbon::today())->get()->count();
+            
+            if($sources->count() >= 1):
+                return [
+                    'error' => true, 
+                    'message' => 'You have reached the limit of entries per day',
+                    'entries' => Leaderboard::where('project_id', $project->id)->where('email', $this->request->input('email'))->whereDate('created_at', Carbon::today())->get(['origin_value','score'])
+                ];
+            endif;
+
+        endif;
+
+        /*
         # check if limit reached
         $projects_to_limit = [3, 11]; // tetrapaks
 
@@ -477,6 +544,7 @@ class MainController extends Controller
                 return ['error' => true, 'message' => 'Daily limit reached'];
             endif;
         endif;
+        */
 
         # create Leaderboard
         $lb = new Leaderboard;
@@ -614,6 +682,7 @@ class MainController extends Controller
         $type = $this->request->input('type');
         $limit = $this->request->input('limit') ?? 5;
         $details = $this->request->input('details');
+        $fields = $this->request->input('fields');
         
         $between = $this->request->input('between');
         $tz = $this->request->input('tz') ?? 'UTC';
@@ -648,9 +717,9 @@ class MainController extends Controller
         $top = Leaderboard::where('project_id', $project->id);
 
         if($type == 'highest'):
-            $top = $top->select('email', 'name', 'details', DB::raw('max(score) as score'));
+            $top = $top->select('email', 'name', 'details', 'user_id', DB::raw('max(score) as score'));
         else:
-            $top = $top->select('email', 'name', 'details', DB::raw('sum(score) as score'));
+            $top = $top->select('email', 'name', 'details', 'user_id', DB::raw('sum(score) as score'));
         endif;
 
         if($between):
@@ -661,8 +730,15 @@ class MainController extends Controller
             $top = $top->whereJsonContains('details', $details);
         endif;  
 
-        $top = $top->orderBy('score', 'desc')->groupBy('email')->limit($limit)->get();
-        $top = $top->map->only(['name','score']);
+        $top = $top->with(['user.member'])->orderBy('score', 'desc')->groupBy('email')->limit($limit)->get();
+        $top = $top->map(function ($item) {
+            return [
+                'name' => data_get($item, 'name'),
+                'email' => data_get($item, 'email'),
+                'score' => data_get($item, 'score'),
+                'details' => data_get($item, 'user.member.details')
+            ];
+        });
 
         /* rank */
         if($email):
@@ -707,6 +783,88 @@ class MainController extends Controller
 
     }
 
+    public function articlesView()
+    {
+        $project = Project::where('ucode', $this->request->input('project_id'))->first();
+        $articles = Article::where('project_id', $project->id);
+    
+        if($this->request->input('filter')):
+            foreach($this->request->input('filter') as $key => $value):
+                $articles = $articles->where($key, $value);
+            endforeach;
+        endif;
+    
+        if($this->request->input('article_id')):
+            $articles = $articles->where('id', $this->request->input('article_id'));
+        elseif($this->request->input('slug')):
+            $articles = $articles->where('slug', $this->request->input('slug'));
+        elseif($this->request->input('title')):
+            $articles = $articles->where('title', 'like', '%'.$this->request->input('title').'%');
+        endif;
+    
+        $article = $articles->first();
+    
+        if($article):
+            $article->increment('count');
+            return ['success' => true, 'article' => $article];
+        endif;
+    }
+
+    public function articlesAll()
+    {
+        $rules = [
+            'filter.*' => 'in:source_value,source_id,language,country',
+            'filter.source_value' => 'string',
+            'filter.source_id' => 'string',
+            'filter.language' => 'string',
+            'filter.country' => 'string',
+            'filter' => 'array',
+            'tags' => 'string',
+            'title' => 'string',
+            'limit' => 'integer',
+            'order' => 'in:asc,desc',
+        ];
+        
+        $validator = Validator::make($this->request->all(), $rules);
+        
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $project = Project::where('ucode', $this->request->input('project_id'))->first();
+        $articles = Article::where('project_id', $project->id);
+        
+        if($this->request->input('filter')):
+            foreach($this->request->input('filter') as $key => $value):
+                $articles = $articles->where($key, $value);
+            endforeach;
+        endif;
+
+        if($this->request->input('limit')):
+            $articles = $articles->limit($this->request->input('limit'));
+        endif;
+
+        if($this->request->input('title')):
+            $articles = $articles->where('title', 'like', '%'.$this->request->input('title').'%');
+        endif;
+
+        if($this->request->input('tags')):
+            $articles = $articles->where('tags', 'like', '%'.$this->request->input('tags').'%');
+        endif;
+
+        if($this->request->input('order') == 'asc' || $this->request->input('order') == 'desc'):
+            $articles = $articles->orderBy('created_at', $this->request->input('order'));
+        endif;
+
+        if($this->request->input('order') == 'name-asc' || $this->request->input('order') == 'name-desc'):
+            $articles = $articles->orderBy('name', $this->request->input('order') == 'name-asc' ? 'asc' : 'desc');
+        endif;
+
+        $articles = $articles->get();
+
+        return $articles;
+    }
+
     public function crmContact()
     {
         $project = Project::where('ucode', $this->request->input('project_id'))->first();
@@ -741,5 +899,121 @@ class MainController extends Controller
         }
 
         return ['success' => false];
+    }
+
+    public function array2csv ($array) {
+        $csv = '';
+        foreach ($array as $item) {
+            $csv .= implode(';', $item) . "\n";
+        }
+        return $csv;
+    }
+
+    public function qrcodesViews($project) {
+
+        //AlphaNumCode::truncate();
+        
+        $type = request()->input('type');
+        $filter = request()->input('filter');
+        $page = request()->input('page');
+        $limit = request()->input('limit', 1000);
+        
+        $query = QR::where('project_id', $project)
+                    ->where('is_unique', true)
+                    ->when($filter, function ($query, $filter) {
+                        return $query->where('title', 'like', '%' . $filter . '%');
+                    });
+        
+        if ($page !== null) {
+            $codes = $query->paginate($limit, ['*'], 'page', $page)->items();
+        } else {
+            $codes = $query->get()->toArray();
+        }
+        
+        $codes = array_map(function ($code) {
+            return [
+                'url' => route('go.redirect', $code['keyword']),
+                'image' => 'https://query.appetitecreative.com/v2/public/qr?url=' . route('go.redirect', $code['keyword'])
+            ];
+        }, $codes);
+        
+        if ($type == 'array') {
+            return response()->json($codes, 200, [], JSON_UNESCAPED_SLASHES);
+        }
+
+        if ($type == 'count') {
+            return response()->json(
+                [
+                    'filter' => $filter,
+                    'count' => count($codes)
+                ]
+            );
+        }
+        
+        if ($type == 'csv') {
+            return response()->streamDownload(function () use ($codes) {
+                echo $this->array2csv($codes);
+            }, 'codes.csv');
+        }        
+
+        if ($type == 'txt') {
+            // should print url and image
+            return response()->streamDownload(function () use ($codes) {
+                echo $this->array2csv($codes);
+            }, 'codes.txt');
+        }
+        
+    }
+
+    public function alphaNumView($project) {
+
+        //AlphaNumCode::truncate();
+        
+        $type = request()->input('type');
+        $filter = request()->input('filter');
+        
+        $codes = AlphaNumCode::where('project_id', $project)
+            ->where('burned', false)
+            ->when($filter, function ($query, $filter) {
+                return $query->where('title', 'like', '%' . $filter . '%');
+            })
+            ->inRandomOrder()
+            ->pluck('code')
+            ->toArray();
+
+        if ($type == 'array') {
+            return response()->json($codes);
+        }
+
+        if ($type == 'count') {
+            return response()->json(
+                [
+                    'filter' => $filter,
+                    'count' => count($codes)
+                ]
+            );
+        }
+
+        if ($type == 'csv') {
+            // Ensure each code is wrapped in ="CODE" to be recognized as a string by Excel
+            $formattedCodes = array_map(function ($code) {
+                return '="' . $code . '"';
+            }, $codes);
+        
+            $codesString = implode("\n", $formattedCodes);
+        
+            return response()->streamDownload(function () use ($codesString) {
+                echo $codesString;
+            }, 'codes.csv');
+        }
+        
+
+        if ($type == 'txt') {
+            $codes = implode("\n", $codes);
+            return response()->streamDownload(function () use ($codes) {
+                echo $codes;
+            }, 'codes.txt');
+        }
+        
     }
 }

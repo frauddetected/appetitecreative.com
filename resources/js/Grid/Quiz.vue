@@ -1,4 +1,5 @@
 <template>
+    <div class="w-6/12">
     <transition name="fade" mode="out-in">
     <div v-if="loaded" class="bg-white w-full">
 
@@ -18,7 +19,7 @@
                     </h1>
                 </div>
             </div>
-
+            
             <div class="flex w-1/4 justify-center">
                 <div class="w-2/3 text-center">
                     <h2 class="uppercase text-xs">Avg Repeated Questions <br> Per User</h2>
@@ -30,21 +31,21 @@
         </div>
 
         <ul class="grid grid-cols-2 gap-6 p-6 overflow-y-auto" style="height: 575px;">
-            <li class="p-4 border bg-ms-gray-10 border-gray-300" v-for="(q, index) in questions">
+            <li class="p-4 border bg-white border-gray-300" v-for="(q, index) in questions">
                 <h2 class="text-base h-20">{{ index }}. {{ q.title }}</h2>
                 <div 
                     v-tippy="{ content: `<div class='p-2'>Answered <strong class='ml-0'>(${Math.round(answer.total_answers * 100 / q.total_answers_count)}%)</strong> of the time</div>`, followCursor: true }" 
-                    class="flex relative justify-between items-center border-b" v-for="answer in q.answers"
+                    class="flex relative justify-between items-center border-b-2 border-white" v-for="answer in q.answers"
                     >
-                    <p class="py-3 font-bold">
+                    <p class="py-3 px-1 font-bold w-full flex">
                         {{ answer.title }}
-                        <span v-if="answer.is_correct == true" class="ml-3 text-xs text-green-400 uppercase">correct</span>
+                        <span v-if="answer.is_correct == true" class="ml-auto text-xs text-green-400 uppercase">correct</span>
                     </p>
                     <div class="flex">
                         <!--<span class="rounded-sm bg-ms-blue-20 text-gray-400 text-xs py-1 px-2 w-8">{{ answer.total_answers }}x</span>-->
                         <span class="ml-2 rounded-sm bg-ms-gray-120  text-white text-xs py-1 px-2 w-12">{{ Math.round(answer.total_answers * 100 / q.total_answers_count) }}%</span>
                     </div>
-                    <div class="duration-300 left-0 bottom-0 border-b-2 absolute border-ms-blue-20" :style="{ width: `${answer.total_answers * 100 / q.total_answers_count}%` }"></div>
+                    <div class="duration-300 left-0 bottom-0 h-full absolute bg-ms-blue-20/10" :style="{ width: `${answer.total_answers * 100 / q.total_answers_count}%` }"></div>
                 </div>
             </li>
         </ul>
@@ -58,6 +59,7 @@
         </div>
     </div>
     </transition>
+    </div>
 </template>
 
 <script>
@@ -65,13 +67,15 @@ import Loader from '@/Components/ContentLoader.vue'
 
 export default{
     components: { Loader },
-    props: ['period'],
+    props: ['fullUnixRange','brand','country'],
     data(){
         return{
             loaded: false,
             questions: [],
             stats: []
         }
+    },
+    computed: {
     },
     methods: { 
         nFormatter(num, digits) {
@@ -92,7 +96,7 @@ export default{
         },  
     },
     mounted(){
-        axios.post('/', { grid: 'quiz' }).then(r => {
+        axios.post('/', { grid: 'quiz', period: this.fullUnixRange, filter: { brand: this.brand.id, country: this.country } }).then(r => {
             this.questions = r.data.questionsRes
             this.stats.users = r.data.users
             this.loaded = true
