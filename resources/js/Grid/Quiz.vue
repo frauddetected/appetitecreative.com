@@ -1,5 +1,5 @@
 <template>
-    <div class="w-6/12">
+    <div :class="className ? className : 'w-6/12'">
     <transition name="fade" mode="out-in">
     <div v-if="loaded" class="bg-white w-full">
 
@@ -67,7 +67,7 @@ import Loader from '@/Components/ContentLoader.vue'
 
 export default{
     components: { Loader },
-    props: ['fullUnixRange','brand','country'],
+    props: ['fullUnixRange','brand','country','className'],
     data(){
         return{
             loaded: false,

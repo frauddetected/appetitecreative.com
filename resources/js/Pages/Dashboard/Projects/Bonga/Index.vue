@@ -488,10 +488,7 @@
 
         <!-- other row -->
         <div class="flex gap-x-6 mt-6">
-            <div class="w-8/12">
-                <GridQuiz :fullUnixRange="fullUnixRange" :brand="brand" :country="countryName" />
-            </div>
-            
+            <GridQuiz :className="'w-8/12'" :fullUnixRange="fullUnixRange" :brand="brand" :country="countryName" />            
             <transition name="fade" mode="out-in">
             <div v-if="grid.leaderboard" class="w-4/12 bg-white rounded-sm">
 
@@ -534,8 +531,6 @@
                 </h2>
 
                 <div v-if="filters.registrations == 'Users'">
-
-                    <p class="text-xs mx-4 p-4 bg-green-100 text-center">Leaderboard data between {{ moment(between.start).format('ll') }} and {{ moment(between.end).format('ll') }}</p>
                     
                     <section class="flex-table p-6 mt-0">
                         <div class="flex-table-header">

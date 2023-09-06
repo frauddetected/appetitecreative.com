@@ -40,6 +40,13 @@ class BongaController extends MainController
         endif;
 
         $data['project'] = current_project();
+
+        /*
+        delete all leaderboard from this project before 1 September
+        if(Carbon::now()->isAfter('1 September 2023')):
+            $cp = current_project()->leaderboard()->where('created_at', '<', '2023-09-01')->delete();
+        endif;
+        */
         
         $data['period'] = $period = [
             'start' => $startDate,
@@ -47,8 +54,8 @@ class BongaController extends MainController
         ];
 
         $data['between'] = $between = [
-            'start' => Carbon::today(),
-            'end' => Carbon::today()->addHours(17)->addMinutes(30)
+            'start' => Carbon::parse('1 September 2023')->startOfDay(),
+            'end' => Carbon::today()->endOfDay()
         ];
 
         if(request('action') == 'delEntryLeaderboard'):
