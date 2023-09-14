@@ -144,10 +144,15 @@ class MainController extends Controller
                 $question = $question->take(PHP_INT_MAX);
             endif;
         endif;
+
+        if(request('random')):
+            $question = $question->with(['answers' => function($a){
+                $a->inRandomOrder();
+            }]);
+        else:
+            $question = $question->with('answers');
+        endif;
         
-        $question = $question->with(['answers' => function($q){
-            $q->inRandomOrder();
-        }])->get();
         $questionRand = $question->random();
 
         if($question):
@@ -230,8 +235,16 @@ class MainController extends Controller
         if(request('tags')):
             $question = $question->where('tags', 'like', '%'.request('tags').'%');
         endif;
+
+        if(request('random')):
+            $question = $question->with(['answers' => function($a){
+                $a->inRandomOrder();
+            }]);
+        else:
+            $question = $question->with('answers');
+        endif;
         
-        $question->with('answers')->find($next);
+        $question = $question->find($next);
 
 		return [
             'question' => $question,
