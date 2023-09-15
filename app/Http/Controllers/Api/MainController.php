@@ -32,6 +32,7 @@ use App\Models\Article;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use GeoIp2\Database\Reader;
 
 class MainController extends Controller
 {
@@ -48,18 +49,17 @@ class MainController extends Controller
 
 	public function geo()
 	{
-		$ip = $this->request->ip();
-		//$url = 'http://api.ipstack.com/'.$ip.'?access_key=e94099df11399ecea810e293f05261b3&format=1';
-		$url = 'http://ip-api.com/json/'.$ip;
+        $ip = request('ip') ?? request()->ip();
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$server_output = curl_exec($ch);
-		curl_close ($ch);
+        $reader = new Reader(storage_path('app/geolite/GeoLite2-City.mmdb'));
+        $record = $reader->city($ip) ?? null;
+        $country = $record ? $record->country : null;
+        $city = $record ? $record->city : null;
 
-		$server_output = json_decode($server_output);
-		return response()->json($server_output);
+        return [
+            'country' => $country ? $country->name : null,
+            'city' => $city ? $city->name : null
+        ];
 	}
 
     public function trackSource()

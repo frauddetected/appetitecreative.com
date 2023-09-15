@@ -26,7 +26,7 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use App\Http\Controllers\Dashboard\MainController;
 use Symfony\Component\VarDumper\VarDumper;
 
-class RauchController extends MainController
+class RauchWinterController extends MainController
 {
     public function index()
     {

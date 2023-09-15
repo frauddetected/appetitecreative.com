@@ -19,7 +19,7 @@ Route::group(['domain' => env('DOMAIN_API'), 'prefix' => 'api'], function(){
     Route::get('/alphanum/{project}/view', [App\Http\Controllers\Api\MainController::class, 'alphaNumView'])->name('alphanum.external.views');
     Route::get('/qrcodes/{project}/view', [App\Http\Controllers\Api\MainController::class, 'qrcodesViews'])->name('qrcodes.external.views');
 
-    Route::post('/geo/ip', [App\Http\Controllers\Api\MainController::class, 'geo'])->name('api.qr.geo');
+    Route::any('/geo/ip', [App\Http\Controllers\Api\MainController::class, 'geo'])->name('api.qr.geo');
     
     Route::post('/qr/details', [App\Http\Controllers\Api\MainController::class, 'qrDetails'])->name('api.qr.details');
     Route::post('/selfie/submit', [App\Http\Controllers\Api\MainController::class, 'selfieSubmit'])->name('api.selfie.submit');

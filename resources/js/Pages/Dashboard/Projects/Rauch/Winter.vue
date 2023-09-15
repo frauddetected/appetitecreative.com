@@ -426,9 +426,21 @@
 
             <!-- other row -->
             <div class="flex gap-x-6 mt-6">
-                <div class="w-9/12">
-                    <GridQuiz :fullUnixRange="fullUnixRange" :brand="brand" :country="countryName" />
+                <GridQuiz :fullUnixRange="fullUnixRange" :brand="brand" :country="countryName" />
+
+                <div class="w-3/12 bg-white rounded-md">
+                    <div class="w-full border-b p-4 mb-4">
+                        <h2>Cookies</h2>
+                    </div>
+                    <section class="flex-table p-6 mt-8">
+                        <div class="flex-table-header">
+                            <div class="col">Cookie</div>
+                            <div class="col text-right">Yes</div>
+                            <div class="col text-right">No</div>
+                        </div>
+                    </section>
                 </div>
+
                 <div v-if="grid.share" class="w-3/12 bg-white rounded-md">
 
                 <div class="w-full border-b p-4 mb-4">
