@@ -76,7 +76,7 @@ return [
         //     'table' => 'users',
         // ],
     ],
-
+    'verification' => true,
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords

@@ -27,6 +27,10 @@ use App\Http\Controllers\Dashboard\MainController as DashboardController;
 use App\Http\Controllers\Sharing\MainController as SharingMainController;
 use App\Http\Controllers\Go\MainController as GoMainController;
 
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\CustomLoginController;
+
+
 use App\Http\Controllers\Api\MainController as ApiMainController;
 use App\Http\Controllers\Projects\AlphaController;
 use App\Models\AlphaNumCode;
@@ -317,7 +321,11 @@ return 1;
     */
 });
 
+Route::get('/register', [RegisterController::class, 'index'])->name('register');
+Route::post('/register', [RegisterController::class, 'store'])->name('register');
+Route::post('/login', [CustomLoginController::class, 'checkUser'])->name('login');
 
+Route::get('/verified/{id}', [RegisterController::class, 'verified'])->name('verified');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
