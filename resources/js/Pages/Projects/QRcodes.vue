@@ -140,10 +140,10 @@
                 <template #content>
                     <div class="flex flex-col items-center justify-center">
                         
-                        <vue-qrcode class="w-56" :value="`https://go.appetite.link/${previewQR}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
-                        <vue-qrcode @ready="onReady" class="hidden" :value="`https://go.appetite.link/${previewQR}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode class="w-56" :value="`${defaultQRUrl}${previewQR}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode @ready="onReady" class="hidden" :value="`${defaultQRUrl}${previewQR}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
                         
-                        <a :href="`https://go.appetite.link/${previewQR}`" class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs" target="_blank">{{ `https://go.appetite.link/${previewQR}` }}</a>
+                        <a :href="`${defaultQRUrl}${previewQR}`" class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs" target="_blank">{{ `${defaultQRUrl}${previewQR}` }}</a>
 
                     </div>
                 </template>
@@ -349,6 +349,7 @@
 
         data(){
             return{
+                defaultQRUrl: `https://go.appetite.link/`,
                 darkColor: '',
                 lightColor: '',
                 addNewCode: false,
@@ -384,7 +385,9 @@
 
         mounted(){
 
-            console.log('this.codes', this.codes)
+            if(this.project_id == 37){
+                this.defaultQRUrl = 'https://go.happydaywinterdrinks.com/';
+            }
 
             if(this.project.qr){
                 this.project.qr.forEach(item => {
