@@ -29,7 +29,7 @@
                     <span class="ml-2 text-sm text-gray-600">Remember me</span>
                 </label>
                 <Link :href="route('register')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Sign in
+                    Sign Up
                 </Link>
             </div>
 
