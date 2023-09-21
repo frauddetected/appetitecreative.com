@@ -77,7 +77,7 @@ class RegisterController extends Controller
         if($user){
             $user->email_verified_at = Carbon::now();
             $user->save();
-            return redirect()->to('login');
+            return redirect()->to('login')->with("status","Your email is verified successfully.");
         }
         else{
             abort(404);
