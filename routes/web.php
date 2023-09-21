@@ -57,23 +57,27 @@ Route::get('/changetable', function () {
     });
 });
 
-Route::group(['domain' => env('DOMAIN_RAUCH')], function(){
-    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('rauch.redirect');    
+Route::group(['domain' => env('DOMAIN_RAUCH')], function () {
+    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('rauch.redirect');
 });
 
-Route::group(['domain' => env('DOMAIN_KDD')], function(){
-    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('kdd.redirect');    
+Route::group(['domain' => env('DOMAIN_RAUCH_WINTER')], function () {
+    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('rauch.redirect');
 });
 
-Route::group(['domain' => env('DOMAIN_GO')], function(){
-    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('go.redirect');    
+Route::group(['domain' => env('DOMAIN_KDD')], function () {
+    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('kdd.redirect');
 });
 
-Route::group(['domain' => env('DOMAIN_SHARE')], function(){
-    Route::get('/{project}/{selfie}', [SharingMainController::class, 'index'])->name('sharing.index');    
+Route::group(['domain' => env('DOMAIN_GO')], function () {
+    Route::get('/{id}', [GoMainController::class, 'redirect'])->name('go.redirect');
 });
 
- function extractSurname($email, $firstName)
+Route::group(['domain' => env('DOMAIN_SHARE')], function () {
+    Route::get('/{project}/{selfie}', [SharingMainController::class, 'index'])->name('sharing.index');
+});
+
+function extractSurname($email, $firstName)
 {
     // Split the email address at '@', and convert it to lowercase
     $username = strtolower(explode('@', $email)[0]);
@@ -118,22 +122,23 @@ Route::group(['domain' => env('DOMAIN_SHARE')], function(){
 
 
 
-function isJson($string) {
-    if(!is_string($string)) return false;
+function isJson($string)
+{
+    if (!is_string($string)) return false;
     json_decode($string);
     return (json_last_error() == JSON_ERROR_NONE);
 }
 
-Route::get('/surnames2', function(){
+Route::get('/surnames2', function () {
     echo extractSurname('alhaas54@gmail.com', 'Lina');
 });
 
-Route::get('/surnames', function(){
+Route::get('/surnames', function () {
     Participant::whereProjectId(26)->chunk(400, function ($participants) {
         foreach ($participants as $participant) {
-            if(!$participant->profile) continue;
+            if (!$participant->profile) continue;
             $profile = ($participant->profile);
-            if(!isset($profile->name)) continue;
+            if (!isset($profile->name)) continue;
             $profile->surname = extractSurname(trim($profile->email), trim($profile->name));
             $participant->profile = json_encode($profile);
             $participant->save();
@@ -141,64 +146,64 @@ Route::get('/surnames', function(){
     });
 });
 
-Route::get('/geoip', function(){
+Route::get('/geoip', function () {
     //$reader = new Reader(storage_path('app/geolite/GeoLite2-City.mmdb'));
     //$record = $reader->city(request()->ip());
 });
 
-Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function(){
-        
-    Route::any('/', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->index();
+Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function () {
+
+    Route::any('/', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->index();
     })->name('dashboard');
-    
-    Route::any('/analytics', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->analytics();
+
+    Route::any('/analytics', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->analytics();
     })->name('analytics');
 
-    Route::get('/prizes', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->prizes();
+    Route::get('/prizes', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->prizes();
     })->name('prizes');
 
-    Route::get('/charts/{type}', function($type){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->charts($type);
+    Route::get('/charts/{type}', function ($type) {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->charts($type);
     })->name('charts');
 
-    Route::get('/exports', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->exports();
+    Route::get('/exports', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->exports();
     })->name('exports');
 
-    Route::get('/export/emails', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->exportEmails();
+    Route::get('/export/emails', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->exportEmails();
     })->name('export.emails');
 
-    Route::get('/export/daily', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->exportDaily();
+    Route::get('/export/daily', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->exportDaily();
     })->name('export.daily');
 
-    Route::get('/export/leaderboard', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->exportLeaderboard();
+    Route::get('/export/leaderboard', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->exportLeaderboard();
     })->name('export.leaderboard');
 
-    Route::get('/insights', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->insights();
+    Route::get('/insights', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->insights();
     })->name('insights');
 
     Route::post('/prizes/winner', [DashboardController::class, 'prizeWinner'])->name('prizes.winner');
     Route::post('/prizes/winner/delete', [DashboardController::class, 'prizeWinnerDelete'])->name('prizes.winner.delete');
 
-    Route::post('/participant/update', function(){
-        $customController = current_project()->controller ? 'Projects\\'.current_project()->controller : 'MainController';
-        return App::make('App\Http\Controllers\Dashboard\\'.$customController)->participantUpdate();
+    Route::post('/participant/update', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->participantUpdate();
     })->name('participant.update');
 
     Route::any('/notes', [DashboardController::class, 'notes'])->name('notes');
@@ -208,7 +213,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
 
     Route::post('/modules', [App\Http\Controllers\Modules\MainController::class, 'update'])->name('modules.update');
 
-    Route::prefix('projects')->group(function(){
+    Route::prefix('projects')->group(function () {
 
         Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
         Route::post('/store', [ProjectController::class, 'store'])->name('projects.store');
@@ -244,7 +249,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
         Route::get('/view/quiz', [QuizController::class, 'view'])->name('projects.quiz.view');
         Route::post('/view/quiz', [QuizController::class, 'store'])->name('projects.quiz.store');
         Route::post('/view/quiz/actions', [QuizController::class, 'actions'])->name('projects.quiz.actions');
-    
+
         /* QR */
         Route::get('/view/qr', [QrController::class, 'view'])->name('projects.qr.view');
         Route::post('/view/qr', [QrController::class, 'store'])->name('projects.qr.store');
@@ -252,7 +257,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
         Route::post('/view/qr/details/upload', [QrController::class, 'detailsUpload'])->name('projects.qr.details.upload');
         Route::post('/view/qr/details/add', [QrController::class, 'detailsAdd'])->name('projects.qr.details.add');
         Route::post('/view/qr/details/save', [QrController::class, 'detailsSave'])->name('projects.qr.details.save');
-    
+
         /* Alpha Num */
         Route::get('/view/alphanum', [AlphaController::class, 'view'])->name('projects.alphanum.view');
         Route::post('/view/alphanum', [AlphaController::class, 'store'])->name('projects.alphanum.store');
@@ -275,17 +280,15 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
         Route::get('/view/sources', [SourcesController::class, 'view'])->name('projects.sources.view');
         Route::post('/view/sources', [SourcesController::class, 'store'])->name('projects.sources.store');
         Route::post('/view/sources/toggle', [SourcesController::class, 'toggle'])->name('projects.sources.toggle');
-        
     });
-
 });
 
 
 Route::get('/feed', function () {
 
 
-return 1;
-    
+    return 1;
+
     /*
     $p = new Project;
     $p->user_id = 1;
