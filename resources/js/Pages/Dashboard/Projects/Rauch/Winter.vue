@@ -219,7 +219,7 @@
                         <div class="p-6 flex w-full">
 
                             <div class="w-7/12">
-                                <pie-chart class="p-12" :legend="false" :library="{ animation: { duration: 3000 }}" :colors="['#00bcf2','#8378de','#005b70','#c239b3','#881798','#0078d4','#8764b8']" :data="charts.skus"></pie-chart>
+                                <pie-chart class="p-4" :legend="false" :library="{ animation: { duration: 3000 }}" :colors="['#00bcf2','#8378de','#005b70','#c239b3','#881798','#0078d4','#8764b8']" :data="charts.skus"></pie-chart>
                             </div>
 
                             <section v-if="filters.scans=='Package'" class="flex-table !w-5/12">
@@ -428,17 +428,12 @@
             <div class="flex gap-x-6 mt-6">
                 <GridQuiz :fullUnixRange="fullUnixRange" :brand="brand" :country="countryName" />
 
-                <div class="w-3/12 bg-white rounded-md">
+                <div v-if="grid.share" class="w-3/12 bg-white rounded-md">
                     <div class="w-full border-b p-4 mb-4">
                         <h2>Cookies</h2>
                     </div>
-                    <section class="flex-table p-6 mt-8">
-                        <div class="flex-table-header">
-                            <div class="col">Cookie</div>
-                            <div class="col text-right">Yes</div>
-                            <div class="col text-right">No</div>
-                        </div>
-                    </section>
+                    <pie-chart adapter="google" class="p-12" :legend="false" :library="{ animation: { duration: 3000 }}" :colors="['#00bcf2','#8378de','#005b70','#c239b3','#881798','#0078d4','#8764b8']" 
+                    :data="[['Accepted', stats.cookies.accepted], ['Rejected', stats.cookies.rejected]]"></pie-chart>                    
                 </div>
 
                 <div v-if="grid.share" class="w-3/12 bg-white rounded-md">
@@ -828,6 +823,7 @@
                 axios.post('/', { grid: 'share', period: this.fullUnixRange, filter: { brand: this.brand.id, country: this.country } }).then(r => {
                     this.stats.share = r.data.stats.share
                     this.stats.recipes = r.data.stats.recipes
+                    this.stats.cookies = r.data.stats.cookies
                     this.grid.share = 1         
                 })
             }, 5000);
