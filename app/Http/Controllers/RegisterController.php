@@ -44,7 +44,7 @@ class RegisterController extends Controller
         $user->save();
 
         // add Project
-        $project_name = $request->input('name');
+        $project_name = $request->input('project');
         $project = Project::where('name',$project_name)->first();
         if(!$project){
             $project = new Project;
