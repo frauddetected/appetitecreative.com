@@ -5,13 +5,13 @@
             <h2 class="text-lg text-ms-gray-160 leading-tight">
                 Project <span class="text-ms-gray-50">|</span> <span class="text-gradient">QR Codes</span>
             </h2>
-            <nav class="flex" v-if="$page.props.user.role.level <= 1">
+            <nav class="flex" v-if="$page.props.user.role.level <= 1 || $page.props.user.role.name == 'editor'">
                 <button 
-                    @click="addNewCode=true" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
+                    @click="handleAddNewCodeClick()" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
                     <i class="ms-Icon ms-Icon--Add mr-2"></i> New
                 </button>
                 <button 
-                    @click="addNewBulk=true" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
+                    @click="handleAddNewBulkClick()" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
                     <i class="ms-Icon ms-Icon--Add mr-2"></i> Bulk Generate
                 </button>
             </nav>
@@ -170,6 +170,7 @@
                         <div class="flex flex-col w-full mr-2">
                             <label for="">Title</label>
                             <input v-model="form.title" type="text" class="input">
+                            <span class="text-red-500">{{ titleError }}</span>
                         </div>
 
                        <div class="flex flex-col w-full" v-if="codes.length">
@@ -184,7 +185,7 @@
                                 track-by="id"
                             />
                         </div>
-                        <div v-if="$page.props.user.admin==1" class="ml-2 flex flex-col w-full">
+                        <div v-if="$page.props.user.admin==1 || $page.props.user.role.name == 'editor'" class="ml-2 flex flex-col w-full">
                             <label for="">Keyword</label>
                             <input type="text" v-model="form.keyword" class="input">
                             <p class="text-xs text-right mt-1 text-ms-gray-90">Leave empty if no need</p>
@@ -203,6 +204,7 @@
                                 label="title"
                                 track-by="id"
                             />
+                            <span class="text-red-500">{{ sourceError }}</span>
                         </div>
                         <div class="flex flex-col w-full mr-2" v-if="countries">
                             <label for="">Country</label>
@@ -236,7 +238,7 @@
                 <template #footer>
                     <div v-if="project.sources.length">
                         <button @click="save" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
-                        <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                        <button @click="close" class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
                     </div>
                     <div v-else>
                         Add Sources Before Save
@@ -257,9 +259,10 @@
                         <div class="flex flex-col w-full">
                             <label for="">Title</label>
                             <input v-model="formBulk.title" type="text" class="input">
+                            <span class="text-red-500">{{ titleBulkError }}</span>
                         </div>
 
-                        <div v-if="$page.props.user.admin==1" class="flex flex-col w-full">
+                        <div v-if="$page.props.user.admin==1 || $page.props.user.role.name == 'editor'" class="flex flex-col w-full">
                             <label for="">Quantity</label>
                             <input type="text" v-model="formBulk.quantity" class="input">
                         </div>
@@ -285,6 +288,7 @@
                                 label="title"
                                 track-by="id"
                             />
+                            <span class="text-red-500">{{ sourceBulkError }}</span>
                         </div>
                         <div class="flex flex-col w-full mr-2" v-if="countries">
                             <label for="">Country</label>
@@ -319,7 +323,7 @@
                     <div v-if="project.sources.length">
                         <button v-if="!savingBulk" @click="saveBulk" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
                         <button v-else class="text-white py-2 px-4 mr-2 font-semibold cursor-wait bg-ms-magenta-110">Generating...</button>
-                        <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                        <button  @click="close" class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
                     </div>
                     <div v-else>
                         Add Sources Before Save
@@ -356,6 +360,11 @@
                 addNewParam: false,
                 previewQR: null,
                 savingBulk: false,
+                valid: true,
+                titleError: '',
+                sourceError: '',
+                titleBulkError: '',
+                sourceBulkError: '',
                 form: this.$inertia.form({
                     title: '',
                     parent_id: '',
@@ -409,6 +418,16 @@
         },
 
         methods: {
+            handleAddNewCodeClick(){
+                this.addNewCode = true
+                this.titleError = ''
+                this.sourceError = ''
+            },
+            handleAddNewBulkClick(){
+                this.addNewBulk = true
+                this.sourceBulkError = ''
+                this.titleBulkError = ''
+            },
             handleFileUpload(event, model){
 
                 let data = new FormData();
@@ -455,26 +474,52 @@
                 
             },
             save(){
-                this.form.post(route('projects.qr.store'), {
-                    preserveState: true,
-                    onSuccess: () => {
-                        this.addNewCode = false
-                        this.form.reset()
-                        this.codes = this.project.qr                    
-                    }
-                })
+                this.valid = true;
+                if(this.form.title == ''){
+                    this.valid = false;
+                    this.titleError = 'Please enter title.'
+                }
+                if(this.form.source == ''){
+                    this.valid = false;
+                    this.sourceError = 'Please select source.'
+                }
+                if(this.valid){
+                    this.form.post(route('projects.qr.store'), {
+                        preserveState: true,
+                        onSuccess: () => {
+                            this.addNewCode = false
+                            this.form.reset()
+                            this.codes = this.project.qr 
+                        }
+                    })
+                }
+            },
+            close(){
+                this.addNewCode = false
+                this.addNewBulk = false
             },
             saveBulk(){
-                this.savingBulk = true
-                this.formBulk.post(route('projects.qr.bulkStore'), {
-                    preserveState: true,
-                    onSuccess: () => {
-                        this.addNewBulk = false
-                        this.formBulk.reset()
-                        this.codes = this.project.qr       
-                        this.savingBulk = false             
-                    }
-                })
+                this.valid = true;
+                if(this.formBulk.title == ''){
+                    this.valid = false;
+                    this.titleBulkError = 'Please enter title.'
+                }
+                if(this.formBulk.source == ''){
+                    this.valid = false;
+                    this.sourceBulkError = 'Please select source.'
+                }
+                if(this.valid){
+                    this.savingBulk = true
+                    this.formBulk.post(route('projects.qr.bulkStore'), {
+                        preserveState: true,
+                        onSuccess: () => {
+                            this.addNewBulk = false
+                            this.formBulk.reset()
+                            this.codes = this.project.qr
+                            this.savingBulk = false
+                        }
+                    })
+                }
             },
             addTag (newTag){                
                 this.$inertia.post(route('projects.qr.details.add'), { value: newTag })
