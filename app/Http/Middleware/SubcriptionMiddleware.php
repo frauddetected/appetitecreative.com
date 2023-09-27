@@ -37,12 +37,11 @@ class SubcriptionMiddleware
         $isFirstPlanRedirect = false;
         $date = date('Y-m-d H:i:s');
         $url = url()->current();
-        // dd(Auth::user());
         $qrCodePermission = true;
-        if($user && !Auth::user()->is_admin){
+        if($user && !Auth::user()->is_admin && Auth::user()->role['name'] != 'contributor'){
             $userId = Auth::user()->id;
             
-            if(strpos($url, "billing") !== false || strpos($url, "user/profile") !== false || strpos($url, "logout") !== false || strpos($url, "/contact") !== false){
+            if(strpos($url, "billing") !== false || strpos($url, "user/profile") !== false || strpos($url, "logout") !== false || strpos($url, "/contact") !== false || strpos($url, "/spark/") !== false){
                 return $next($request);
             }
             else{
