@@ -4,6 +4,12 @@
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
+    "repositories": [
+        {
+            "url": "./spark-stripe",
+            "type": "path"
+        }
+    ],
     "require": {
         "php": "^7.3|^8.0",
         "fideloper/proxy": "^4.4",
@@ -24,7 +30,8 @@
         "spatie/laravel-query-builder": "^3.5",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "tightenco/ziggy": "^1.0",
-        "yadahan/laravel-authentication-log": "^1.4"
+        "yadahan/laravel-authentication-log": "^1.4",
+        "laravel/spark-stripe": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -5,7 +5,7 @@
             <h2 class="text-lg text-ms-gray-160 leading-tight">
                 Project <span class="text-ms-gray-50">|</span> <span class="text-gradient">QR Codes</span>
             </h2>
-            <nav class="flex" v-if="$page.props.user.role.level <= 1 || $page.props.user.role.name == 'editor'">
+            <nav class="flex" v-if="$page.props.user.role.level <= 1 || ($page.props.user.role.name == 'editor' && qrCodePermission)">
                 <button 
                     @click="handleAddNewCodeClick()" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
                     <i class="ms-Icon ms-Icon--Add mr-2"></i> New
@@ -348,7 +348,8 @@
             'codes',
             'project',
             'codestats',
-            'project_id'
+            'project_id',
+            'qrCodePermission'
         ],
 
         data(){
@@ -392,8 +393,6 @@
         },
 
         mounted(){
-
-            console.log('this.codes', this.codes)
 
             if(this.project.qr){
                 this.project.qr.forEach(item => {

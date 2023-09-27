@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Yadahan\AuthenticationLog\AuthenticationLogable;
+use Spark\Billable;
 
 class User extends Authenticatable
 {
@@ -19,7 +20,8 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use AuthenticationLogable;
-
+    use Billable;
+    
     /**
      * The attributes that are mass assignable.
      *

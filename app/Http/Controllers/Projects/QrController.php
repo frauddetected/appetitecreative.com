@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Projects;
 
 use Inertia\Inertia;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\QR;
 use App\Models\QRParam;
 use Illuminate\Support\Str;
+use DB;
 
 class QrController extends Controller
 {
@@ -32,7 +33,8 @@ class QrController extends Controller
             ->groupBy('title')
             ->orderBy('total', 'desc')
             ->paginate(20);
-
+        
+        $data['qrCodePermission'] = request()->attributes->get('qrCodePermission');
         $data['codestats'] = [
             'total' => QR::where('project_id', $id)->count(),
             'unique' => QR::where('project_id', $id)->where('is_unique', true)->count(),
@@ -44,6 +46,12 @@ class QrController extends Controller
 
     public function store()
     {
+        $qrCodePermission = request()->attributes->get('qrCodePermission');
+        if(isset(Auth::user()->role['name']) && Auth::user()->role['name'] == 'editor'){
+            if(!$qrCodePermission){
+                return redirect()->back()->with('status', 'You have limited permission to generate QR Code.');
+            }
+        }  
         $id = current_project()->id;
 
         $qr = new QR;
@@ -54,6 +62,7 @@ class QrController extends Controller
         $qr->country = request('country') ? request('country')['code'] : null;
         $qr->language = request('language') ? request('language')['code'] : null;
         $qr->source_id = request('source') ? request('source')['id'] : null;
+        $qr->created_by = Auth::user()->id;
         $qr->project_id = $id;
 
         if($qr->save()){
@@ -68,6 +77,13 @@ class QrController extends Controller
         $title = request()->input('title');
         $totalCodes = request()->input('quantity');
         $isUnique = request()->input('unique');
+
+        $qrCodePermission = request()->attributes->get('qrCodePermission');
+        if(isset(Auth::user()->role['name']) && Auth::user()->role['name'] == 'editor'){
+            if(!$qrCodePermission){
+                return redirect()->back()->with('status', 'You have limited permission to generate QR Code.');
+            }
+        }
 
         $existingCodes = QR::pluck('keyword')->toArray();
 
