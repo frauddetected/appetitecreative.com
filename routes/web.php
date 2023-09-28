@@ -30,6 +30,7 @@ use App\Http\Controllers\Go\MainController as GoMainController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\CustomLoginController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\Api\MainController as ApiMainController;
 use App\Http\Controllers\Projects\AlphaController;
@@ -288,6 +289,11 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function()
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     Route::get('/contact-list', [ContactController::class, 'list'])->name('contact.list');
     Route::post('/contact-manage-list', [ContactController::class, 'manageList'])->name('contact.manage.list');
+
+    Route::get('/user-list', [UserController::class, 'list'])->name('user.list');
+    Route::post('/user-manage-list', [UserController::class, 'manageList'])->name('user.manage.list');
+    Route::put('/user/can-subscription/{id}', [UserController::class, 'canSubscription'])->name('user.can.subscription');
+
 });
 
 

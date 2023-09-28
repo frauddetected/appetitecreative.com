@@ -38,7 +38,7 @@ class SubcriptionMiddleware
         $date = date('Y-m-d H:i:s');
         $url = url()->current();
         $qrCodePermission = true;
-        if($user && !Auth::user()->is_admin && Auth::user()->role['name'] != 'contributor'){
+        if($user && !Auth::user()->is_admin && Auth::user()->role['name'] != 'contributor' && Auth::user()->overwrite_subscription == 'no'){
             $userId = Auth::user()->id;
             
             if(strpos($url, "billing") !== false || strpos($url, "user/profile") !== false || strpos($url, "logout") !== false || strpos($url, "/contact") !== false || strpos($url, "/spark/") !== false){

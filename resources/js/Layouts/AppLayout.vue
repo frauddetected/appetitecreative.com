@@ -33,6 +33,9 @@
                                 <jet-nav-link v-if="$page.props.user.admin" :href="route('contact.list')" :active="route().current('contact.list')">
                                     Contact Us
                                 </jet-nav-link>
+                                <jet-nav-link v-if="$page.props.user.admin" :href="route('user.list')" :active="route().current('user.list')">
+                                    Users
+                                </jet-nav-link>
                             </div>
                         </div>
 
@@ -154,7 +157,7 @@
                                         <jet-dropdown-link :href="route('profile.show')">
                                             Profile
                                         </jet-dropdown-link>
-                                        <a class="block px-4 py-2 text-sm leading-5 text-ms-gray-130 hover:bg-ms-gray-20 focus:outline-none focus:bg-ms-gray-20 transition" href="/billing">
+                                        <a class="block px-4 py-2 text-sm leading-5 text-ms-gray-130 hover:bg-ms-gray-20 focus:outline-none focus:bg-ms-gray-20 transition" href="/billing" v-if="$page.props.user.admin != 1 && $page.props.user.role.name != 'contributor' && $page.props.user.overwrite_subscription == 'no'">
                                             Billing
                                         </a>
 
@@ -208,7 +211,7 @@
                             <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
                             </jet-responsive-nav-link>
-                            <a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition" href="/billing">
+                            <a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition" href="/billing" v-if="$page.props.user.admin != 1 && $page.props.user.role.name != 'contributor' && $page.props.user.overwrite_subscription == 'no'">
                                 Billing
                             </a>
                             <!-- Authentication -->

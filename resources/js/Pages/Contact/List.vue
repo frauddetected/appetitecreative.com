@@ -132,3 +132,8 @@
         },
     };
 </script>
+<style>
+    #data-table_length select {
+        width: 100px; /* Adjust the width to your preference */
+    }
+</style>

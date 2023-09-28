@@ -66,7 +66,7 @@ class ContactController extends Controller
         if($search){
             $contacts = $contacts->where(function ($query) use($search){
                 $query->where('contacts.name','like','%'.$search.'%')
-                        ->orWhere('contacts.name','like','%'.$search.'%')
+                        ->orWhere('users.email','like','%'.$search.'%')
                         ->orWhere('contacts.phone','like','%'.$search.'%')
                         ->orWhere('contacts.plan_type','like','%'.$search.'%')
                         ->orWhere('contacts.subject','like','%'.$search.'%');

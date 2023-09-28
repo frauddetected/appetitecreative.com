@@ -1086,10 +1086,7 @@ export default {
          */
         generateSetupIntentToken(callback) {
             return this.request('GET', '/spark/token').then(
-                response => {
-                    console.log(response.data);
-                    callback(response.data.clientSecret)
-                }
+                response => callback(response.data.clientSecret)
             );
         },
 
