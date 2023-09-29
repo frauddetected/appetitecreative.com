@@ -47,11 +47,16 @@ class QrController extends Controller
     public function store()
     {
         $qrCodePermission = request()->attributes->get('qrCodePermission');
-        if(isset(Auth::user()->role['name']) && Auth::user()->role['name'] == 'editor'){
-            if(!$qrCodePermission){
-                return redirect()->back()->with('status', 'You have limited permission to generate QR Code.');
-            }
-        }  
+        $msg = 'QR code added';
+        if(!$qrCodePermission){
+            
+            $msg = 'You have exceeded QR code generation limit.';
+            return redirect()->back()->with('status', $msg);
+        }
+        $remainingQrCode = request()->attributes->get('remainingQrCode');
+        if($remainingQrCode > 0){
+            $msg = 'you have '.$remainingQrCode.' qr code left to generate.';
+        }
         $id = current_project()->id;
 
         $qr = new QR;
@@ -66,7 +71,7 @@ class QrController extends Controller
         $qr->project_id = $id;
 
         if($qr->save()){
-            return redirect()->back()->with('status','QR code added');
+            return redirect()->back()->with('status',$msg);
         }
     }
 
@@ -158,5 +163,18 @@ class QrController extends Controller
         ])->save();
 
         return redirect()->back()->with('status','Details saved');
+    }
+
+    public function checkLimit()
+    {
+		$qrCodePermission = request()->attributes->get('qrCodePermission');
+        if(!$qrCodePermission){
+            $msg = 'You have exceeded QR code generation limit.';
+            return redirect()->back()->with('status', $msg);
+        }
+        $json = array(
+            'success' => true
+        );
+        return response()->json($json);    
     }
 }

@@ -5,7 +5,7 @@
             <h2 class="text-lg text-ms-gray-160 leading-tight">
                 Project <span class="text-ms-gray-50">|</span> <span class="text-gradient">QR Codes</span>
             </h2>
-            <nav class="flex" v-if="$page.props.user.role.level <= 1 || ($page.props.user.role.name == 'editor' && qrCodePermission)">
+            <nav class="flex" v-if="$page.props.user.role.level <= 1 || $page.props.user.role.name == 'editor'">
                 <button 
                     @click="handleAddNewCodeClick()" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
                     <i class="ms-Icon ms-Icon--Add mr-2"></i> New
@@ -418,9 +418,14 @@
 
         methods: {
             handleAddNewCodeClick(){
-                this.addNewCode = true
-                this.titleError = ''
-                this.sourceError = ''
+                if(!this.qrCodePermission){
+                    this.$inertia.post(route('projects.qr.limit'))
+                }
+                else{
+                    this.addNewCode = true;
+                    this.titleError = '';
+                    this.sourceError = '';
+                }
             },
             handleAddNewBulkClick(){
                 this.addNewBulk = true

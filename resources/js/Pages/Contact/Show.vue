@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-end py-3 text-right  sm:rounded-bl-md sm:rounded-br-md">
-                                <button type="submit" class="border border-ms-gray-160 px-4 py-1 hover:bg-ms-gray-40 ml-2 font-bold" @click="submitContact"> Send </button>
+                                <button type="submit" class="border border-ms-gray-160 px-4 py-1 hover:bg-ms-gray-40 ml-2 font-bold" @click="submitContact" v-show="submitProcess"> Send </button>
                             </div>
                         </div>
                     </div>
@@ -92,8 +92,8 @@
                     name:'',
                     phone:'',
                     subject:''
-                }
-
+                },
+                submitProcess:true
             }
         },
 
@@ -134,6 +134,7 @@
                     this.error = true;
                 }
                 if(!this.error){
+                    this.submitProcess = false;
                     this.form.post(route('contact.store'), {
                         errorBag: 'submitContact',
                         onSuccess: () => {
@@ -141,6 +142,10 @@
                             this.form.phone = '';
                             this.form.message = '';
                             this.form.subject = '';
+                            this.submitProcess = true;
+                        },
+                        onError: () => {
+                            this.submitProcess = true;
                         }
                     })
                 }

@@ -38,6 +38,7 @@ class SubcriptionMiddleware
         $date = date('Y-m-d H:i:s');
         $url = url()->current();
         $qrCodePermission = true;
+        $remainingQrCode = 0;
         if($user && !Auth::user()->is_admin && Auth::user()->role['name'] != 'contributor' && Auth::user()->overwrite_subscription == 'no'){
             $userId = Auth::user()->id;
             
@@ -64,13 +65,15 @@ class SubcriptionMiddleware
             }
             $getEditorQrCode = DB::table('qrcodes')->where('created_by', $userId)->count();
             if($getEditorQrCode){
-               if($getEditorQrCode >= $totalQrGenerate){
+               if(($getEditorQrCode >= $totalQrGenerate) && ($totalQrGenerate != -1)){
                 $qrCodePermission = false;
                }
+               $remainingQrCode = ($totalQrGenerate - $getEditorQrCode);
             }
-            
         }
         $request->attributes->set('qrCodePermission', $qrCodePermission);
+        $request->attributes->set('remainingQrCode', $remainingQrCode);
+        
         if($isFirstPlanRedirect){
             return $this->redirector->to($redirectProfileUrl);
         }

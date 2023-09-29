@@ -39,7 +39,11 @@ class ContactController extends Controller
         $contact->user_id = Auth::user()->id;
         
         if($contact->save()){
-            Mail::to(env('CONTACT_US_EMAIL'))->send(new SubcriptionPlanMail($user, $contact, null));
+            $recipientEmails = [
+                env('CONTACT_US_EMAIL_1'), // Replace with the first email address
+                env('CONTACT_US_EMAIL_2'), // Replace with the second email address
+            ];
+            Mail::to($recipientEmails)->send(new SubcriptionPlanMail($user, $contact, null));
             return redirect()->back()->with('status', 'Successfully submitted request for plan '.$plan_type.'.');
         }
         else{
