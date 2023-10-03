@@ -198,7 +198,7 @@
 
                 <template #footer>
                     <button @click="save" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
-                    <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                    <button @click="close" class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
                 </template>
 
             </jet-dialog-modal>
@@ -299,7 +299,10 @@
                         this.articles = this.project.articles                    
                     }
                 })
-            }
+            },
+            close(){
+                this.addNewArticle = false
+            },
         },
 
         components: {

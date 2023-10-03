@@ -98,7 +98,7 @@
                     <button class="bg-ms-gray-20 hover:bg-ms-gray-30 py-2 px-4">Add QR</button>
                     <button class="mr-auto bg-ms-gray-20 hover:bg-ms-gray-30 py-2 px-4">Add Source</button>
                     <button @click="save" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
-                    <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                    <button @click="close" class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
                 </template>
 
             </jet-dialog-modal>
@@ -138,7 +138,10 @@
                         this.prizes = this.project.prizes                    
                     }
                 })
-            }
+            },
+            close(){
+                this.addNewPrize = false
+            },
         },
 
         components: {

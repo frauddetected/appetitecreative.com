@@ -44,7 +44,8 @@ class ContactController extends Controller
                 env('CONTACT_US_EMAIL_2'), // Replace with the second email address
             ];
             Mail::to($recipientEmails)->send(new SubcriptionPlanMail($user, $contact, null));
-            return redirect()->back()->with('status', 'Successfully submitted request for plan '.$plan_type.'.');
+            
+            return redirect()->back()->with('status', 'Thank you for showing interest in '.$plan_type.' plan. We will get back to you soon,');
         }
         else{
             return redirect()->back()->with('status', 'Something went wrong.');

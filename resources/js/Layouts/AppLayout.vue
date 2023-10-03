@@ -374,7 +374,13 @@
             parseNotification(notification) {
                 switch (notification.type) {
                     case 'App\\Notifications\\AddedToProject':
-                        return `You've been added to the project <strong>${notification.data.project.name}</strong>`;
+                        if(notification.data){
+                            return `You've been added to the project <strong>${notification.data.project.name}</strong>`;
+                        }
+                        else{
+                            return `You've been added to the project`; 
+                        }
+                        // return `You've been added to the project`;
                         break;
                 
                     default:

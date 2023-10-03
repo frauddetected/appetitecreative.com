@@ -42,6 +42,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'company_size' => $input['company_size'],
                 'website_url' => $input['website_url'],
             ])->save();
+            session(['profile_status' => 'Profile updated successfully.']);
         }
     }
 

@@ -97,7 +97,7 @@
                         <button v-if="!generating" @click="save" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
                         <button v-else class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Generating...</button>
 
-                        <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                        <button @click="close" class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
                     </div>
                 </template>
                 
@@ -150,6 +150,9 @@
                         this.codes = this.project.alphanum                 
                     }
                 })
+            },
+            close(){
+                this.addNewCode = false
             },
         },
 
