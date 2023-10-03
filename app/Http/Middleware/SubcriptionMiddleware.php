@@ -54,13 +54,13 @@ class SubcriptionMiddleware
             if($isUserSubscribed){
                 $isFirstPlanRedirect = false;
                 if($isUserSubscribed->stripe_plan == env('STRIPE_PRICE_SILVER')){
-                    $totalQrGenerate =100;
+                    $totalQrGenerate =0;
                 }
                 elseif($isUserSubscribed->stripe_plan == env('STRIPE_PRICE_BRONZE_MONTHLY')){
                     $totalQrGenerate =25;
                 }
                 elseif($isUserSubscribed->stripe_plan == env('STRIPE_PRICE_BRONZE_GOLD')){
-                    $totalQrGenerate =-1;
+                    $totalQrGenerate =0;
                 }
             }
             $getEditorQrCode = DB::table('qrcodes')->where('created_by', $userId)->count();
