@@ -54,6 +54,29 @@
                 <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
+
+            <!-- Business Name -->
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="business_name" value="Business Name" />
+                <jet-input id="business_name" type="text" class="mt-1 block w-full" v-model="form.business_name" />
+                <jet-input-error :message="form.errors.business_name" class="mt-2" />
+            </div>
+
+            <!-- Company Size -->
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="company_size" value="Company Size" />
+                <select id="mySelect" v-model="form.company_size">
+                    <option v-for="option in options" :value="option.value">{{ option.label }}</option>
+                </select>
+                <jet-input-error :message="form.errors.company_size" class="mt-2" />
+            </div>
+
+            <!-- Website Url -->
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="website_url" value="Website URL" />
+                <jet-input id="website_url" type="text" class="mt-1 block w-full" v-model="form.website_url" />
+                <jet-input-error :message="form.errors.website_url" class="mt-2" />
+            </div>
         </template>
 
         <template #actions>
@@ -97,9 +120,20 @@
                     name: this.user.name,
                     email: this.user.email,
                     photo: null,
+                    business_name: this.user.business_name,
+                    company_size: this.user.company_size,
+                    website_url: this.user.website_url,
                 }),
 
                 photoPreview: null,
+                selectedOption: null,
+                options: [
+                    { label: '0 to 5', value: '0 to 5' },
+                    { label: '5 to 10', value: '5 to 10' },
+                    { label: '10 to 20', value: '10 to 20' },
+                    { label: '20 to 50', value: '20 to 50' },
+                    { label: '50+', value: '50+' }
+                ]
             }
         },
 

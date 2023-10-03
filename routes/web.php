@@ -27,11 +27,17 @@ use App\Http\Controllers\Dashboard\MainController as DashboardController;
 use App\Http\Controllers\Sharing\MainController as SharingMainController;
 use App\Http\Controllers\Go\MainController as GoMainController;
 
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\CustomLoginController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\Api\MainController as ApiMainController;
 use App\Http\Controllers\Projects\AlphaController;
 use App\Models\AlphaNumCode;
 use App\Models\Leaderboard;
 use App\Models\Participant;
+use App\Models\Contact;
 use BaconQrCode\Encoder\QrCode;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use GeoIp2\Database\Reader;
@@ -257,6 +263,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function (
         Route::post('/view/qr/details/upload', [QrController::class, 'detailsUpload'])->name('projects.qr.details.upload');
         Route::post('/view/qr/details/add', [QrController::class, 'detailsAdd'])->name('projects.qr.details.add');
         Route::post('/view/qr/details/save', [QrController::class, 'detailsSave'])->name('projects.qr.details.save');
+        Route::post('/check/qr/limit', [QrController::class, 'checkLimit'])->name('projects.qr.limit');
 
         /* Alpha Num */
         Route::get('/view/alphanum', [AlphaController::class, 'view'])->name('projects.alphanum.view');
@@ -281,6 +288,17 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function (
         Route::post('/view/sources', [SourcesController::class, 'store'])->name('projects.sources.store');
         Route::post('/view/sources/toggle', [SourcesController::class, 'toggle'])->name('projects.sources.toggle');
     });
+
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+    Route::get('/contact/{id}', [ContactController::class, 'view'])->name('contact.view');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+    Route::get('/contact-list', [ContactController::class, 'list'])->name('contact.list');
+    Route::post('/contact-manage-list', [ContactController::class, 'manageList'])->name('contact.manage.list');
+
+    Route::get('/user-list', [UserController::class, 'list'])->name('user.list');
+    Route::post('/user-manage-list', [UserController::class, 'manageList'])->name('user.manage.list');
+    Route::put('/user/can-subscription/{id}', [UserController::class, 'canSubscription'])->name('user.can.subscription');
+
 });
 
 
@@ -320,7 +338,11 @@ Route::get('/feed', function () {
     */
 });
 
+Route::get('/register', [RegisterController::class, 'index'])->name('register');
+Route::post('/register', [RegisterController::class, 'store'])->name('register');
+Route::post('/login', [CustomLoginController::class, 'checkUser'])->name('login');
 
+Route::get('/verified/{id}', [RegisterController::class, 'verified'])->name('verified');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

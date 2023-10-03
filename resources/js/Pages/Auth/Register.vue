@@ -7,7 +7,7 @@
         </template>
 
         <jet-validation-errors class="mb-4" />
-
+        <jet-mail-confirmation-message class="mb-4" />
         <form @submit.prevent="submit">
             <div>
                 <jet-label for="name" value="Name" />
@@ -27,6 +27,11 @@
             <div class="mt-4">
                 <jet-label for="password_confirmation" value="Confirm Password" />
                 <jet-input id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
+            </div>
+
+            <div class="mt-4">
+                <jet-label for="project" value="Project" />
+                <jet-input id="project" type="text" class="mt-1 block w-full" v-model="form.project" required />
             </div>
 
             <div class="mt-4" v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature">
@@ -62,6 +67,7 @@
     import JetCheckbox from '@/Jetstream/Checkbox.vue'
     import JetLabel from '@/Jetstream/Label.vue'
     import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'
+    import JetMailConfirmationMessage from '@/Jetstream/MailConfirmationMessage.vue'
     import { Head, Link } from '@inertiajs/inertia-vue3';
 
     export default {
@@ -74,6 +80,7 @@
             JetCheckbox,
             JetLabel,
             JetValidationErrors,
+            JetMailConfirmationMessage,
             Link,
         },
 
@@ -85,6 +92,7 @@
                     password: '',
                     password_confirmation: '',
                     terms: false,
+                    project:'',
                 })
             }
         },
@@ -95,6 +103,6 @@
                     onFinish: () => this.form.reset('password', 'password_confirmation'),
                 })
             }
-        }
+        },
     }
 </script>

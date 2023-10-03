@@ -16,7 +16,6 @@
                                     <jet-application-mark class="block w-auto" />
                                 </Link>
                             </div>
-
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
@@ -30,6 +29,12 @@
                                 </jet-nav-link>
                                 <jet-nav-link :href="route('notes')" :active="route().current('notes')">
                                     Notes
+                                </jet-nav-link>
+                                <jet-nav-link v-if="$page.props.user.admin" :href="route('contact.list')" :active="route().current('contact.list')">
+                                    Contact Us
+                                </jet-nav-link>
+                                <jet-nav-link v-if="$page.props.user.admin" :href="route('user.list')" :active="route().current('user.list')">
+                                    Users
                                 </jet-nav-link>
                             </div>
                         </div>
@@ -152,8 +157,11 @@
                                         <jet-dropdown-link :href="route('profile.show')">
                                             Profile
                                         </jet-dropdown-link>
-                                        <div class="border-t border-gray-100"></div>
+                                        <a class="block px-4 py-2 text-sm leading-5 text-ms-gray-130 hover:bg-ms-gray-20 focus:outline-none focus:bg-ms-gray-20 transition" href="/billing" v-if="$page.props.user.admin != 1 && $page.props.user.role.name != 'contributor' && $page.props.user.overwrite_subscription == 'no'">
+                                            Billing
+                                        </a>
 
+                                        <div class="border-t border-gray-100"></div>
                                         <!-- Authentication -->
                                         <form @submit.prevent="logout">
                                             <jet-dropdown-link as="button">
@@ -203,7 +211,9 @@
                             <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
                             </jet-responsive-nav-link>
-
+                            <a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition" href="/billing" v-if="$page.props.user.admin != 1 && $page.props.user.role.name != 'contributor' && $page.props.user.overwrite_subscription == 'no'">
+                                Billing
+                            </a>
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logout">
                                 <jet-responsive-nav-link as="button">
@@ -362,10 +372,15 @@
             },
 
             parseNotification(notification) {
-                
                 switch (notification.type) {
                     case 'App\\Notifications\\AddedToProject':
-                        return `You've been added to the project <strong>${notification.data.project.name}</strong>`;
+                        if(notification.data){
+                            return `You've been added to the project <strong>${notification.data.project.name}</strong>`;
+                        }
+                        else{
+                            return `You've been added to the project`; 
+                        }
+                        // return `You've been added to the project`;
                         break;
                 
                     default:

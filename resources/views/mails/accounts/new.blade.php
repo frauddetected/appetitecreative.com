@@ -10,8 +10,8 @@ You can access your new account by clicking on the button below and use the foll
 {{ $user->email }} <br />
 {{ $password }}
 
-@component('mail::button', ['url' => 'https://app.appetite.link'])
-Go To Platform
+@component('mail::button', ['url' => 'https://app.appetite.link/verified/'.base64_encode($user->id)])
+Verify your Email
 @endcomponent
 
 You can update your password and enable 2FA any time under your account <a href="https://app.appetite.link/user/profile">settings</a>.

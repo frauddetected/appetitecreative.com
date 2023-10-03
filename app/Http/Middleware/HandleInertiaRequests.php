@@ -38,13 +38,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
+        $profileStatus = $request->session()->get('profile_status');
+        if(!empty($profileStatus)){
+            session()->forget('profile_status');
+        }
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
             ],
             'modules' => $request->user() ? Module::whereProjectId($request->user()->current_project_id)->whereIsActive(true)->get() : null,
             'flash' => [
-                'message' => $request->session()->get('status')
+                'message' => !empty($profileStatus) ? $profileStatus : $request->session()->get('status')
             ],
         ]);
     }

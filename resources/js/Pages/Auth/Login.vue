@@ -23,11 +23,14 @@
                 <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
             </div>
 
-            <div class="block mt-4">
+            <div class="block mt-4 flex justify-between">
                 <label class="flex items-center">
                     <jet-checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ml-2 text-sm text-gray-600">Remember me</span>
                 </label>
+                <Link :href="route('register')" class="underline text-sm text-gray-600 hover:text-gray-900">
+                    Sign Up
+                </Link>
             </div>
 
             <div class="flex items-center justify-end mt-4">
