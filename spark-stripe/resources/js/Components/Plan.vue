@@ -14,6 +14,7 @@
 
         <div class="px-6 pb-4">
             <div class="mt-2 text-md font-semibold text-gray-700">
+                From
                 <span v-html="plan.price"></span>
                 <span v-if="$page.props.collectsVat">({{ __('ex VAT') }})</span>
                 <template v-if="seatName"> / {{ seatName }} / {{ __(plan.interval) }}</template>

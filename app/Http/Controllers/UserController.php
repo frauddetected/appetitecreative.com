@@ -40,7 +40,7 @@ class UserController extends Controller
         }
 
         $recordsTotal = $users->count();
-        $users = $users->skip($start) // Apply the 'start' offset
+        $users = $users->orderBy('users.id','DESC')->skip($start) // Apply the 'start' offset
                             ->take($length) // Apply the 'length' limit
                             ->get(); // Retrieve the data
         $data = [];
