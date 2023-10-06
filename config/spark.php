@@ -135,7 +135,7 @@ return [
                 ],
                 [
                     'name' => 'Silver',
-                    'short_description' => '',
+                    'short_description' => 'Full access to dashboard and Analytics.',
                     'monthly_id' => env('STRIPE_PRICE_SILVER'),
                     'features' => [
                         'Access to dashboard',
@@ -146,7 +146,7 @@ return [
                 ],
                 [
                     'name' => 'Gold',
-                    'short_description' => '',
+                    'short_description' => 'Full access to dashboard and Analytics.',
                     'monthly_id' => env('STRIPE_PRICE_BRONZE_GOLD'),
                     'features' => [
                         'Access to dashboard',

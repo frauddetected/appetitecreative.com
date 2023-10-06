@@ -3793,6 +3793,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mixins: [_Mixins_FormatsValues__WEBPACK_IMPORTED_MODULE_0__.default],
@@ -4973,8 +4974,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     generateSetupIntentToken: function generateSetupIntentToken(callback) {
       return this.request('GET', '/spark/token').then(function (response) {
-        console.log(response.data);
-        callback(response.data.clientSecret);
+        return callback(response.data.clientSecret);
       });
     },
 
@@ -9173,6 +9173,7 @@ var render = function() {
         "div",
         { staticClass: "mt-2 text-md font-semibold text-gray-700" },
         [
+          _vm._v("\n            From\n            "),
           _c("span", { domProps: { innerHTML: _vm._s(_vm.plan.price) } }),
           _vm._v(" "),
           _vm.$page.props.collectsVat

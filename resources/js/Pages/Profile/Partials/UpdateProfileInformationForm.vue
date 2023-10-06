@@ -128,11 +128,12 @@
                 photoPreview: null,
                 selectedOption: null,
                 options: [
-                    { label: '0 to 5', value: '0 to 5' },
-                    { label: '5 to 10', value: '5 to 10' },
-                    { label: '10 to 20', value: '10 to 20' },
-                    { label: '20 to 50', value: '20 to 50' },
-                    { label: '50+', value: '50+' }
+                    { label: '1-10', value: '1-10' },
+                    { label: '11-50', value: '11-50' },
+                    { label: '51-200', value: '51-200' },
+                    { label: '201-500', value: '201-500' },
+                    { label: '501-1000', value: '501-1000' },
+                    { label: '1001 plus', value: '1001 plus' }
                 ]
             }
         },
