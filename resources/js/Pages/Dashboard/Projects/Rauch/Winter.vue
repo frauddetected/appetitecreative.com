@@ -115,7 +115,7 @@
                         <li @click="filterCountry('Slovakia')">Slovakia</li>
                         <li @click="filterCountry('Slovenia')">Slovenia</li>
                         <li @click="filterCountry('Hungary')">Hungary</li>
-                        <li @click="filterCountry('Czech Republic')">Czech Republic</li>
+                        <li @click="filterCountry('Czechia')">Czechia</li>
                     </ul>
                 </button>
 
