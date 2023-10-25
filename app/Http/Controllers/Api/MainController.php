@@ -418,6 +418,8 @@ class MainController extends Controller
         $log->save();
     }
 
+    /* - */
+
     public function qrDetails()
     {
         $validated = $this->request->validate([
@@ -428,11 +430,73 @@ class MainController extends Controller
         $code = QR::where('keyword', $id)->first();
 
         if($code):
-            return $code->only('title','keyword','country','language','source_id','details');
+            return $code->only('title','keyword','country','language','source_id','details','is_unique','is_burn');
         else:
             abort(404);
         endif;
     }
+
+    public function qrBurn()
+    {
+        $validated = $this->request->validate([
+            'ucode' => 'required'
+        ]);
+
+        $id = request('ucode');
+        $code = QR::where('keyword', $id)->first();
+
+        if($code):
+            if($code->is_burn == true){
+                return ['success' => false, 'message' => 'QR code already burned'];
+            }
+            $code->is_burn = true;
+            $code->save();
+            return ['success' => true, 'message' => 'QR code burned'];
+        else:
+            return ['success' => false, 'message' => 'Failed to burn QR code'];
+        endif;
+    }
+
+    /* - */
+
+    public function alphanumDetails()
+    {
+        $validated = $this->request->validate([
+            'code' => 'required'
+        ]);
+
+        $id = request('code');
+        $code = AlphaNumCode::where('code', $id)->first();
+
+        if($code):
+            return $code->only('title','code','burned');
+        else:
+            abort(404);
+        endif;
+    }
+
+    public function alphanumBurn()
+    {
+        $validated = $this->request->validate([
+            'code' => 'required'
+        ]);
+
+        $id = request('code');
+        $code = AlphaNumCode::where('code', $id)->first();
+
+        if($code):
+            if($code->burned == true){
+                return ['success' => false, 'message' => 'Alpha Numeric code already burned'];
+            }
+            $code->burned = true;
+            $code->save();
+            return ['success' => true, 'message' => 'Alpha Numeric code burned'];
+        else:
+            return ['success' => false, 'message' => 'Failed to burn Alpha Numeric code'];
+        endif;
+    }
+
+    /* - */
 
     public function selfieSubmit()
     {

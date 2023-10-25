@@ -20,7 +20,11 @@ class QuizController extends Controller
     public function view()
     {
         $id = current_project()->id;
-        $data['project'] = Project::with(['i18n','qr','sources','qr_params','quiz.answers'])->find($id);
+        $data['project'] = Project::with(['i18n','sources','qr_params','quiz.answers'])
+            ->whereHas('qr', function ($query) {
+                $query->where('is_unique', 0);
+            })
+            ->find($id);
 
         return Inertia::render('Projects/Quiz', $data);
     }

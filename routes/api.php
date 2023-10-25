@@ -22,6 +22,11 @@ Route::group(['domain' => env('DOMAIN_API'), 'prefix' => 'api'], function(){
     Route::any('/geo/ip', [App\Http\Controllers\Api\MainController::class, 'geo'])->name('api.qr.geo');
     
     Route::post('/qr/details', [App\Http\Controllers\Api\MainController::class, 'qrDetails'])->name('api.qr.details');
+    Route::post('/qr/burn', [App\Http\Controllers\Api\MainController::class, 'qrBurn'])->name('api.qr.burn');
+
+    Route::post('/alphanum/details', [App\Http\Controllers\Api\MainController::class, 'alphanumDetails'])->name('api.alphanum.details');
+    Route::post('/alphanum/burn', [App\Http\Controllers\Api\MainController::class, 'alphanumBurn'])->name('api.alphanum.burn');
+
     Route::post('/selfie/submit', [App\Http\Controllers\Api\MainController::class, 'selfieSubmit'])->name('api.selfie.submit');
 
     Route::post('/leaderboard/get', [App\Http\Controllers\Api\MainController::class, 'leaderboardGet'])->name('api.leaderboard.get');

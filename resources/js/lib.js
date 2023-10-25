@@ -405,6 +405,46 @@ window.$link = class AppetiteLink
         })
     }
 
+    static get qrs()
+    {
+        const self = this;
+        return{
+            details(code = '', params = {}){
+                let ucode = localStorage.getItem('linkQrCode_Ucode') ?? code;
+                return self.post('qr/details', { 
+                    ucode: ucode,
+                    ...params
+                });
+            },
+            burn(code = '', params = {}){
+                let ucode = localStorage.getItem('linkQrCode_Ucode') ?? code;
+                return self.post('qr/burn', {
+                    ucode: ucode,
+                    ...params
+                });
+            } 
+        }
+    }
+
+    static get alphanum()
+    {
+        const self = this;
+        return{
+            details(code, params = {}){
+                return self.post('alphanum/details', { 
+                    code: code,
+                    ...params
+                });
+            },
+            burn(code, params = {}){
+                return self.post('alphanum/burn', {
+                    code: code,
+                    ...params
+                });
+            } 
+        }
+    }
+
     static get selfie()
     {
         const self = this;

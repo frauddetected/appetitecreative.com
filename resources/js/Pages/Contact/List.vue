@@ -54,9 +54,9 @@
 <script>
     import AppLayout from '@/Layouts/AppLayout.vue'
     import JetContactViewDialogModal from '@/Jetstream/ContactViewDialogModal.vue'
-    import $ from 'jquery';
-    import 'datatables.net';
-    import 'datatables.net-dt/css/jquery.dataTables.css';
+    import $ from 'jquery'
+    import 'datatables.net'
+    import 'datatables.net-dt/css/jquery.dataTables.css'
 
     export default {
         data(){

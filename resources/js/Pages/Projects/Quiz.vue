@@ -277,7 +277,7 @@ export default {
     mounted(){
         this.languages = this.project.i18n && this.project.i18n.languages
         this.countries = this.project.i18n && this.project.i18n.countries
-        this.codes = this.project.qr
+        this.codes = this.project.qr ?? []
     },
 
     methods: {

@@ -19,7 +19,11 @@ class PrizesController extends Controller
         $id = current_project()->id;
 
         $data['module'] = project_module('prizes');
-        $data['project'] = Project::with(['i18n','qr','sources','prizes'])->find($id);
+        $data['project'] = Project::with(['i18n','sources','prizes'])
+        ->whereHas('qr', function ($query) {
+            $query->where('is_unique', 0);
+        })
+        ->find($id);
 
         return Inertia::render('Projects/Prizes', $data);
     }
