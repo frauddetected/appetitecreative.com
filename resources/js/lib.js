@@ -325,19 +325,26 @@ window.$link = class AppetiteLink
         return 'direct'
     }
 
-    static async init(token = '', project_id = '')
+    static async init(token = '', project_id = '', params = {})
     {
         if(token) this.token = token;
         if(project_id) this.project_id = project_id;
 
         if(this.type == 'qrcode')
         {    
-            await this.qrCode();
+            await this.qrCode('', params);
 
             const state = { 'value': true }
             const title = document.title
             const url = this.$.removeURLParameter();
             history.pushState(state, title, url)
+
+            /* - */
+            if (url.includes('count=scan')) {
+                const urlUpdated = this.$.removeURLParameter(window.location.href, "count");
+                history.pushState(state, title, urlUpdated)
+            }
+            /* - */
 
             this.source_id = this.qr.source_id
             this.source_value = this.qr.keyword
@@ -379,7 +386,7 @@ window.$link = class AppetiteLink
         }
     }
 
-    static qrCode(code = '') 
+    static qrCode(code = '', params = {}) 
     {
         return new Promise(resolve => {
 
@@ -394,7 +401,7 @@ window.$link = class AppetiteLink
 
             } else {
 
-                this.post('qr/details', { ucode: code }).then(r => {
+                this.post('qr/details', { ucode: code, ...params }).then(r => {
                     localStorage.setItem('linkQrCode_Ucode', code);
                     localStorage.setItem('linkQrCode', JSON.stringify(r.data));
                     this.qr = r.data

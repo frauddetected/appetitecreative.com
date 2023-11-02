@@ -795,6 +795,7 @@
                 })
             }, 1000);
 
+            /*
             setTimeout(() => {
                 axios.post('/', { grid: 'leaderboard', period: this.fullUnixRange, filter: { brand: this.brand.id, country: this.country } }).then(r => {
                     this.stats.leaderboard = r.data.stats.leaderboard
@@ -802,6 +803,7 @@
                     this.grid.leaderboard = 1         
                 })
             }, 2000);
+            */
 
             setTimeout(() => {
                 axios.post('/', { grid: 'games', period: this.fullUnixRange, filter: { brand: this.brand.id, country: this.country } }).then(r => {

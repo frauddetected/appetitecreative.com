@@ -429,6 +429,10 @@ class MainController extends Controller
         $id = request('ucode');
         $code = QR::where('keyword', $id)->first();
 
+        if(request('count_scan')):
+            $code->addScan();
+        endif;
+
         if($code):
             return $code->only('title','keyword','country','language','source_id','details','is_unique','is_burn');
         else:
