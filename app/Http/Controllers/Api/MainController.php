@@ -431,6 +431,27 @@ class MainController extends Controller
 
         if(request('count_scan')):
             $code->addScan();
+
+            /* try pick geo */
+            $reader = new Reader(storage_path('app/geolite/GeoLite2-City.mmdb'));
+            $record = $reader->city(request()->ip()) ?? null;
+            $country = $record ? $record->country : null;
+            $city = $record ? $record->city : null;
+
+            /* --- */
+            $logAction = new LogAction;
+            $logAction->name = 'scan_qr';
+            $logAction->values = json_encode(['ucode' => $id]);
+            $logAction->details = json_encode(['country' => $country ? $country->name : null, 'city' => $city ? $city->name : null]);
+            $logAction->source_id = $code->source_id;
+            $logAction->sessid = request()->ip();
+            $logAction->source_value = $id;
+            $logAction->project_id = $code->project->id;
+            $logAction->save();
+
+            $source = $code->project->sources->where('id', 1)->first();
+            $source->pivot->increment('count');
+
         endif;
 
         if($code):

@@ -36,7 +36,7 @@ class RauchWinterController extends MainController
             $endDate = Carbon::parse($period[1])->endOfDay();
         else :
             $startDate = Carbon::now()->startOfDay()->subWeeks(1);
-            $endDate = Carbon::now();
+            $endDate = Carbon::now()->endOfDay();
         endif;
 
         $data['project'] = current_project();
@@ -46,7 +46,7 @@ class RauchWinterController extends MainController
         ];
         $data['between'] = $between = [
             'start' => Carbon::today()->subYears(5),
-            'end' => Carbon::today(),
+            'end' => Carbon::today()->endOfDay()
         ];
         if (request('action') == 'delEntryLeaderboard') :
             $cp = current_project()->leaderboard()->whereId(request('id'))->delete();
@@ -110,9 +110,8 @@ class RauchWinterController extends MainController
             'Hungary' => 'Hungary',
             'Czechia' => 'Czechia',
         ];
-
         $cachingPeriod = current_project()->id . '-' . $startDate->format('Y-m-d') . '-' . $endDate->format('Y-m-d');
-        $ttl = 60 * 5; // 5 minutes
+        $ttl = 15; // 1 minute
 
         /* grid: scans */
         if (request('grid') == 'scans') :

@@ -255,7 +255,7 @@
                     <div class="px-6">
                         <h2 class="uppercase text-xs">Total Donations</h2>
                         <h1 class="text-4xl ml-auto font-bold">
-                            €{{ (stats.game_start.count * 0.01).toFixed(2) }}
+                            €{{ (stats.game_start.count * 0.50).toFixed(2) }}
                         </h1>     
                         <h2 class="uppercase mt-4 text-xs">out of</h2>
                         <h1 class="text-xl ml-auto font-bold">

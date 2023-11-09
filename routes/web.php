@@ -41,6 +41,8 @@ use App\Models\Contact;
 use BaconQrCode\Encoder\QrCode;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use GeoIp2\Database\Reader;
+use App\Models\LogAction;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
