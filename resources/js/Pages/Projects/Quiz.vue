@@ -141,7 +141,7 @@
                                     
                                     <div class="flex flex-col w-full">
                                         
-                                        <div class="flex flex-col w-full" v-if="codes.length">
+                                        <div class="flex flex-col w-full" v-if="codes?.length">
                                             <label for="">QR Code</label>
                                             <VueMultiselect
                                                 v-model="form.qrcode"
@@ -286,7 +286,7 @@ export default {
             this.form.tags.push(newTag)
         },
         qrcode(id){
-            let f = this.codes.filter(code => code.id == id)
+            let f = this.codes?.filter(code => code.id == id)
             if(f.length){
                 return f[0].title
             }
