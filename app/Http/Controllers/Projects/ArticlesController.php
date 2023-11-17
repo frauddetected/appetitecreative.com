@@ -70,7 +70,7 @@ class ArticlesController extends Controller
         $article->language = request('language') ? request('language')['code'] : null;
 
         if($article->save()){
-            return redirect()->back()->with('status','Article '.request('id') ? 'updated' : 'created');
+            return redirect()->back()->with('status','Article '.(request('id') ? 'updated' : 'created').' successfully.');
         }
     }
 
@@ -78,7 +78,7 @@ class ArticlesController extends Controller
     {
         if(request('delQuestion')):
             Article::find(request('delQuestion'))->delete();
-            return redirect()->back()->with('status','Question deleted!');
+            return redirect()->back()->with('status','Question deleted successfully!');
         endif;
     }
 }

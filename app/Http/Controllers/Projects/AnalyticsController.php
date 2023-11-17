@@ -63,7 +63,7 @@ class AnalyticsController extends Controller
         $analytics->details = json_encode(request('details'));
 
         if($analytics->save()) {
-            return redirect()->back()->with('status','Analytics settings updated');
+            return redirect()->back()->with('status','Analytic settings updated');
         }
     }
 }

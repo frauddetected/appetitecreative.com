@@ -30,10 +30,19 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
         }
-
+        
         if ($input['email'] !== $user->email &&
             $user instanceof MustVerifyEmail) {
             $this->updateVerifiedUser($user, $input);
+        } elseif($input['email'] !== $user->email) {
+            $user->forceFill([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'business_name' => $input['business_name'],
+                'company_size' => $input['company_size'],
+                'website_url' => $input['website_url'],
+            ])->save();
+            auth()->logout(); // Log the user out
         } else {
             $user->forceFill([
                 'name' => $input['name'],

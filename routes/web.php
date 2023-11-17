@@ -266,6 +266,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function (
         Route::post('/view/qr/details/add', [QrController::class, 'detailsAdd'])->name('projects.qr.details.add');
         Route::post('/view/qr/details/save', [QrController::class, 'detailsSave'])->name('projects.qr.details.save');
         Route::post('/check/qr/limit', [QrController::class, 'checkLimit'])->name('projects.qr.limit');
+        Route::put('/view/qr/details/update', [QrController::class, 'updateQr'])->name('projects.qr.updateQr');
 
         /* Alpha Num */
         Route::get('/view/alphanum', [AlphaController::class, 'view'])->name('projects.alphanum.view');
@@ -300,7 +301,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function (
     Route::get('/user-list', [UserController::class, 'list'])->name('user.list');
     Route::post('/user-manage-list', [UserController::class, 'manageList'])->name('user.manage.list');
     Route::put('/user/can-subscription/{id}', [UserController::class, 'canSubscription'])->name('user.can.subscription');
-
+    Route::post('/user-delete', [UserController::class, 'userDelete'])->name('user.delete');
 });
 
 

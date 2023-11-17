@@ -11,7 +11,7 @@ class CreateAuthenticationLogTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('authentication_log', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -28,7 +28,7 @@ class CreateAuthenticationLogTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('authentication_log');
     }

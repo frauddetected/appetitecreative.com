@@ -11,7 +11,7 @@ class CreateMembersTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
@@ -30,7 +30,7 @@ class CreateMembersTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('members');
     }

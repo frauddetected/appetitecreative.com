@@ -76,6 +76,7 @@
                         <div class="flex flex-col w-full mr-2">
                             <label for="">Title</label>
                             <input type="text" class="input" v-model="form.title" @keyup="generateSlug">
+                            <span class="text-red-500">{{ titleError }}</span>
                         </div>
 
                         <div class="flex mt-2 gap-x-4">
@@ -147,22 +148,22 @@
                             <label for="">Content</label>
                             <editor
                                            v-model="form.content"
-       api-key="1bq1tsdkaxesa8a48bk56ji6yt6bgh3kcgfizd6wj0uw5swt"
-       :init="{
-         height: 300,
-         menubar: false,
-         plugins: [
-           'advlist autolink lists link image charmap print preview anchor',
-           'searchreplace visualblocks code fullscreen',
-           'insertdatetime media table paste code help wordcount'
-         ],
-         toolbar:
-           'undo redo | formatselect | bold italic backcolor | \
-           alignleft aligncenter alignright alignjustify | \
-           bullist numlist outdent indent | removeformat | help'
-       }"
-     />
-
+                                api-key="1bq1tsdkaxesa8a48bk56ji6yt6bgh3kcgfizd6wj0uw5swt"
+                                :init="{
+                                    height: 300,
+                                    menubar: false,
+                                    plugins: [
+                                    'advlist autolink lists link image charmap print preview anchor',
+                                    'searchreplace visualblocks code fullscreen',
+                                    'insertdatetime media table paste code help wordcount'
+                                    ],
+                                    toolbar:
+                                    'undo redo | formatselect | bold italic backcolor | \
+                                    alignleft aligncenter alignright alignjustify | \
+                                    bullist numlist outdent indent | removeformat | help'
+                                }"
+                            />
+                            <span class="text-red-500">{{ contentError }}</span>
                         </div>
 
                         <div class="flex w-full p-3 mt-3 items-center justify-between bg-ms-gray-20">
@@ -225,6 +226,9 @@
                 extraContent: false,
                 tags: [],
                 selected: null,
+                valid:true,
+                titleError: '',
+                contentError: '',
                 form: this.$inertia.form({
                     id: null,
                     title: '',
@@ -291,14 +295,27 @@
 
             },
             save(){
-                this.form.post(route('projects.articles.store'), {
-                    preserveState: true,
-                    onSuccess: () => {
-                        this.addNewArticle = false
-                        this.form.reset()
-                        this.articles = this.project.articles                    
-                    }
-                })
+                this.valid=true;
+
+                if(this.form.title == ''){
+                    this.valid = false;
+                    this.titleError = 'Please enter title.'
+                }
+                if(this.form.content == ''){
+                    this.valid = false;
+                    this.contentError = 'Please enter contents.'
+                }
+                
+                if(this.valid){
+                    this.form.post(route('projects.articles.store'), {
+                        preserveState: true,
+                        onSuccess: () => {
+                            this.addNewArticle = false
+                            this.form.reset()
+                            this.articles = this.project.articles                    
+                        }
+                    })
+                }
             },
             close(){
                 this.addNewArticle = false

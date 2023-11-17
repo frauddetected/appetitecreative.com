@@ -7,7 +7,7 @@
             </h2>
             <nav class="flex items-center">
                 <DatePicker class="w-full" v-model="range" color="teal" is-range mode="date" :masks="masks">
-<template v-slot="{ inputValue, inputEvents, isDragging }">
+    <template v-slot="{ inputValue, inputEvents, isDragging }">
           <div class="flex flex-col sm:flex-row justify-start items-center">
             <div class="relative flex-grow">
               <svg
@@ -80,7 +80,7 @@
                     </div>
                 </vue-countdown>
             </div>
-
+<!-- 
             <div class="flex mt-2">
                 <div class="w-7/12 p-4 bg-white">
 
@@ -95,7 +95,7 @@
                   </div>
                     
                 </div>
-            </div>
+            </div> -->
 
         </div>
 

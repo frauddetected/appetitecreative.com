@@ -29,7 +29,7 @@ class QrController extends Controller
         
         $data['project_id'] = $id;
         $data['codes'] = QR::where('project_id', $id)
-            ->selectRaw('title, keyword, scans, is_unique, COUNT(*) as total, SUM(CASE WHEN is_burn = 1 THEN 1 ELSE 0 END) as burned')
+            ->selectRaw('title, keyword, scans, is_unique, COUNT(*) as total, SUM(CASE WHEN is_burn = 1 THEN 1 ELSE 0 END) as burned, qr_link')
             ->groupBy('title')
             ->orderBy('total', 'desc')
             ->paginate(20);
@@ -151,7 +151,7 @@ class QrController extends Controller
         $QRParam->project_id = $id;
         $QRParam->save();
 
-        return redirect()->back()->with('status','QR param added');
+        return redirect()->back()->with('status','QR param added successfully.');
     }
 
     public function detailsSave()
@@ -162,7 +162,7 @@ class QrController extends Controller
             'details' => request('params')
         ])->save();
 
-        return redirect()->back()->with('status','Details saved');
+        return redirect()->back()->with('status','Details saved successfully.');
     }
 
     public function checkLimit()
@@ -176,5 +176,21 @@ class QrController extends Controller
             'success' => true
         );
         return response()->json($json);    
+    }
+
+    public function updateQr(){
+        // Find the QR code by keyword
+        $keyword = request()->input('qr_code_id');
+        $link = request()->input('new_url');
+        // $lastSegment = substr(strrchr($link, '/'), 1);
+        // if ($lastSegment === false || empty($lastSegment)) {
+        //     $lastSegment = $link;
+        // }
+        $qrCode = QR::where('keyword', $keyword)->first();
+        if ($qrCode) {
+            $qrCode->update(['qr_link' => $link]);
+            return redirect()->back()->with('status','QR code updated successfully.');
+        } 
+        return true;
     }
 }

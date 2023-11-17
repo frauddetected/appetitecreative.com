@@ -33,12 +33,12 @@ class QuizController extends Controller
     {
         if(request('delQuestion')):
             Quiz::find(request('delQuestion'))->delete();
-            return redirect()->back()->with('status','Question deleted!');
+            return redirect()->back()->with('status','Question deleted successfully!');
         endif;
 
         if(request('delAnswer')):
             QuizAnswer::find(request('delAnswer'))->delete();
-            return redirect()->back()->with('status','Answer deleted!');
+            return redirect()->back()->with('status','Answer deleted successfully!');
         endif;
 
         if(request('toggleCorrectAnswer')):
@@ -52,21 +52,21 @@ class QuizController extends Controller
             $ca = Quiz::find(request('cid'));
             $ca->title = request('changeQuestionTitle');
             $ca->save();
-            return redirect()->back()->with('status','Question edited!');
+            return redirect()->back()->with('status','Question edited successfully!');
         endif;
 
         if(request('changeAnswerTitle')):
             $ca = QuizAnswer::find(request('cid'));
             $ca->title = request('changeAnswerTitle');
             $ca->save();
-            return redirect()->back()->with('status','Answer edited!');
+            return redirect()->back()->with('status','Answer edited successfully!');
         endif;
 
         if(request('changeAnswerContent')):
             $ca = QuizAnswer::find(request('cid'));
             $ca->content = request('changeAnswerContent');
             $ca->save();
-            return redirect()->back()->with('status','Answer content edited!');
+            return redirect()->back()->with('status','Answer content edited successfully!');
         endif;
     }
 
@@ -104,7 +104,7 @@ class QuizController extends Controller
         }
 
         if($q->save()){
-            return redirect()->back()->with('status','Quiz Question Added');
+            return redirect()->back()->with('status','Quiz Question Added successfully.');
         }
     }
 }

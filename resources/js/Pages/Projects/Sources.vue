@@ -77,6 +77,7 @@
                                 track-by="id"
                                 label="title"
                             />
+                            <span class="text-red-500">{{ sourceError }}</span>
                         </div>
 
                     </div>
@@ -106,6 +107,8 @@
 
         data(){
             return{
+                sourceError: '',
+                valid: true,
                 addNewCode: false,
                 form: this.$inertia.form({
                     source: {}
@@ -119,12 +122,20 @@
 
         methods: {
             save(){
-                this.form.post(route('projects.sources.store'), {
-                    preserveState: true,
-                    onSuccess: () => {
-                        this.addNewCode = false
-                    }
-                })
+                this.valid = true;
+                if(Object.keys(this.form.source).length === 0){
+                    this.valid = false;
+                    this.sourceError = 'Please select source.'
+                }
+                if(this.valid){
+                    this.form.post(route('projects.sources.store'), {
+                        errorBag: 'save',
+                        preserveState: true,
+                        onSuccess: () => {
+                            this.addNewCode = false
+                        }
+                    })
+                }
             },
             close(){
                 this.addNewCode = false

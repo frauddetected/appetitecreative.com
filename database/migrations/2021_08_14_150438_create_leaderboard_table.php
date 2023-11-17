@@ -11,7 +11,7 @@ class CreateLeaderboardTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('leaderboard', function (Blueprint $table) {
             $table->id();
@@ -38,7 +38,7 @@ class CreateLeaderboardTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('leaderboard');
     }

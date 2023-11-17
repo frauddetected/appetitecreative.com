@@ -64,7 +64,7 @@
                                 <td v-if="codestats.unique" class="text-center">{{ code.is_unique ? code.total.toLocaleString('en-US') : '-' }}</td>
                                 <td v-if="codestats.unique" class="text-center">{{ code.is_unique ? code.burned : '-' }}</td>
                                 <td v-if="!code.is_unique">
-                                    <i @click="previewQR=code.keyword" class="ms-Icon ms-Icon--QRCode cursor-pointer hover:text-ms-cyan-110"></i>
+                                    <i @click="previewQRModal(code)" class="ms-Icon ms-Icon--QRCode cursor-pointer hover:text-ms-cyan-110"></i>
                                 </td>
                                 <td v-else class="text-xs">
                                     <a target="_blank" class="text-ms-magenta-10" :href="`https://query.appetite.link/api/qrcodes/${project_id}/view?type=array?filter=${code.title.replace(' ', '+')}`">API</a>
@@ -138,12 +138,44 @@
                     Preview QR Code
                 </template>
                 <template #content>
+                    <div><input type="hidden" name="previewQrKeyWord" id="previewQrKeyWord" :value="`${previewQR}`" ></div>
                     <div class="flex flex-col items-center justify-center">
                         
-                        <vue-qrcode class="w-56" :value="`${defaultQRUrl}${previewQR}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
-                        <vue-qrcode @ready="onReady" class="hidden" :value="`${defaultQRUrl}${previewQR}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode class="w-56" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode @ready="onReady" class="hidden" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
                         
-                        <a :href="`${defaultQRUrl}${previewQR}`" class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs" target="_blank">{{ `${defaultQRUrl}${previewQR}` }}</a>
+                        <a
+                            v-if="!isEditing && !previewQR.qrLink"
+                            :href="`${defaultQRUrl}${previewQR.keyword}`"
+                            class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs"
+                            target="_blank"
+                        >
+                            {{ `${defaultQRUrl}${previewQR.keyword}` }}
+                        </a>
+
+                        <a
+                            v-if="!isEditing && previewQR.qrLink"
+                            :href="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR.keyword}`"
+                            class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs"
+                            target="_blank"
+                        >
+                            {{ previewQR.qrLink }}
+                        </a>
+
+                        <input
+                            v-if="isEditing"
+                            type="text"
+                            name="qr_url"
+                            class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs user-url"
+                            :value="isEditing ? (updatedQrCode ? updatedQrCode : `${defaultQRUrl}${previewQR.keyword}`) : (previewQR.qrLink ? previewQR.qrLink : `${defaultQRUrl}${previewQR.keyword}`)"
+                            id="editableUserUrl"
+                            :readonly="!isEditing"
+                            @input="updateUserUrl"
+                        />
+                        <span class="text-red-500">{{ qrCodeError }}</span>
+
+                        <span v-if="!isEditing" class="edit-url-click cursor-pointer" @click="toggleEditing">Edit</span>
+                        <button v-if="isEditing" class="edit-url-click" @click="saveChanges">Save</button>
 
                     </div>
                 </template>
@@ -153,7 +185,7 @@
                     <ColorPicker color="#ffffff" className="mr-auto" v-model="lightColor" />
                     
                     <a id="download" :download="previewQR" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Download</a>
-                    <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                    <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30" @click="close">Cancel</button>
 
                 </template>
             </jet-dialog-modal>
@@ -244,7 +276,6 @@
                         Add Sources Before Save
                     </div>
                 </template>
-                
             </jet-dialog-modal>
 
             <!-- Generate Bulk QR Codes -->
@@ -341,7 +372,7 @@
     import VueMultiselect from 'vue-multiselect'
     import VueQrcode from '@chenfengyuan/vue-qrcode'
     import ColorPicker from '@/Components/ColorPicker.vue'
-
+    import $ from 'jquery';
     export default {
         
         props: [
@@ -349,11 +380,12 @@
             'project',
             'codestats',
             'project_id',
-            'qrCodePermission'
+            'qrCodePermission',
         ],
 
         data(){
             return{
+                isEditing: false,
                 defaultQRUrl: `https://go.appetite.link/`,
                 darkColor: '',
                 lightColor: '',
@@ -361,12 +393,15 @@
                 addNewBulk: false,
                 addNewParam: false,
                 previewQR: null,
+                qrLink: null,
                 savingBulk: false,
                 valid: true,
                 titleError: '',
                 sourceError: '',
                 titleBulkError: '',
                 sourceBulkError: '',
+                qrCodeError: '',
+                updatedQrCode: null,
                 form: this.$inertia.form({
                     title: '',
                     parent_id: '',
@@ -391,6 +426,7 @@
         created(){
             this.languages = this.project.i18n && this.project.i18n.languages
             this.countries = this.project.i18n && this.project.i18n.countries
+            // console.log('Codes Data:', this.codes.data);
         },
 
         mounted(){
@@ -422,6 +458,49 @@
         },
 
         methods: {
+            previewQRModal(code) {
+                this.previewQR = { keyword: code.keyword, qrLink: code.qr_link };
+                this.isEditing = false;
+                this.qrCodeError = '';
+            },
+            toggleEditing() {
+                this.isEditing = !this.isEditing;
+            },
+            updateUserUrl(event) {
+                this.userUrl = event.target.value;
+            },
+            saveChanges() {
+                function isValidURL(url) {
+                    // Regular expression for a valid URL
+                    var urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+
+                    // Test the given URL against the regular expression
+                    return urlRegex.test(url);
+                }
+
+                const existingKey = `${this.previewQR.keyword}`;
+                const newUrl = $('#editableUserUrl').val();
+
+                if(isValidURL(newUrl)){
+                    this.$inertia.post(route('projects.qr.updateQr'), {
+                        _method: 'put', // Specify the HTTP method for the update request
+                        qr_code_id: existingKey,
+                        new_url: newUrl,
+                    }, {
+                        preserveState: true,
+                        onSuccess: () => {
+                            this.toggleEditing();
+                            this.previewQR = false
+                            this.codes = this.project.qr 
+                        }
+                    });
+                }
+                else{
+                    this.qrCodeError = 'Please enter valid url.';
+                    this.isEditing = true;
+                    this.updatedQrCode = newUrl;
+                }
+            },
             handleAddNewCodeClick(){
                 if(!this.qrCodePermission){
                     this.$inertia.post(route('projects.qr.limit'))
@@ -506,6 +585,7 @@
             close(){
                 this.addNewCode = false
                 this.addNewBulk = false
+                this.previewQR = null
             },
             saveBulk(){
                 this.valid = true;

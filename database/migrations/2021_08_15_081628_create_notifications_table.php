@@ -11,7 +11,7 @@ class CreateNotificationsTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->uuid('id')->primary();
@@ -28,7 +28,7 @@ class CreateNotificationsTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('notifications');
     }

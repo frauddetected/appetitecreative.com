@@ -160,7 +160,7 @@
                                         <label for="">Source</label>
                                         <VueMultiselect
                                             v-model="form.source_id"
-                                            :options="project.sources"
+                                            :options="(project != null) ? project.sources : ''"
                                             :multiple="false"
                                             :close-on-select="true"
                                             placeholder="Select One"
@@ -275,9 +275,11 @@ export default {
     },
 
     mounted(){
-        this.languages = this.project.i18n && this.project.i18n.languages
-        this.countries = this.project.i18n && this.project.i18n.countries
-        this.codes = this.project.qr ?? []
+        if(this.project !== null){
+            this.languages = this.project.i18n && this.project.i18n.languages
+            this.countries = this.project.i18n && this.project.i18n.countries
+            this.codes = this.project.qr ?? []
+        }
     },
 
     methods: {

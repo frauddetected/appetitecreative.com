@@ -416,9 +416,11 @@
             },
             "$page.props.errorBags.default": function(v){
                 if(v){
-                    v[0].forEach(msg => {
-                        this.toast.error(msg);
-                    });
+                    if(v[0] !== undefined){
+                        v[0].forEach(msg => {
+                            this.toast.error(msg);
+                        });
+                    }
                 }
             }
         }

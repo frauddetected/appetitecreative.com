@@ -68,20 +68,27 @@
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 });
                 $('#data-table').on('change', '.subscriber-button', function () {
-                        var button = $(this);
-                        var userId = button.data('user-id');
-                        var isChecked = $(this).prop('checked');
-                        if(confirm("Are you sure to perform this action?")){
-                            if (isChecked) {
-                                button.addClass('on !bg-green-500');
-                                button.parent().find('.slider').addClass('!bg-green-500');
-                            } else {
-                                button.removeClass('!bg-green-500');
-                                button.parent().find('.slider').removeClass('!bg-green-500');
-                            }
+                    var button = $(this);
+                    var userId = button.data('user-id');
+                    var isChecked = $(this).prop('checked');
+                    if(confirm("Are you sure to perform this action?")){
+                        if (isChecked) {
+                            button.addClass('on !bg-green-500');
+                            button.parent().find('.slider').addClass('!bg-green-500');
+                        } else {
+                            button.removeClass('!bg-green-500');
+                            button.parent().find('.slider').removeClass('!bg-green-500');
+                        }
                         vm.toggle(userId);
                     }
-                    
+                    else{
+                        if (isChecked) {
+                            button.prop('checked', false);
+                        }
+                        else{
+                            button.prop('checked', true);
+                        }
+                    }                    
                 });
             });
         },
