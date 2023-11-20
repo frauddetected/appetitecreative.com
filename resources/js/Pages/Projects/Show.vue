@@ -99,27 +99,26 @@
         </template>
 
         <div>
-            <div class="mx-auto py-10 px-20 flex items-start">
+            <div class="mx-auto py-10 px-4 md:px-6 xl:px-20 flex flex-wrap items-start">
 
-                <div class="w-10/12">
+                <div class="w-full md:w-2/3 lg:w-10/12 order-2 md:order-none sm:pr-8 xl:pr-12">
 
-                <div class="flex">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap xl:flex-nowrap">
+                    <div class="w-full md:w-full xl:w-2/12 sm:pr-8">
                         <h2 class="text-xl">Settings</h2>
                         <p>Update the settings.</p>
                     </div>
-                    <div class="w-8/12">
-                        <form action="">
+                    <div class="w-full xl:w-10/12 overflow-auto">
+                        <form action="" class="mt-4 xl:mt-0">
                             
-                            <div class="flex">
-                                <div class="flex flex-col w-8/12">
+                            <div class="flex flex-wrap">
+                                <div class="flex flex-col w-full sm:w-2/4 mb-4 sm:mb-0">
                                     <label for="">Project Name</label>
-                                    <input v-model="form.name" type="text" class="input" :readonly="!$page.props.user.admin">
+                                    <input v-model="form.name" type="text" class="input w-full" :readonly="!$page.props.user.admin">
                                 </div>
-
-                                <div v-if="$page.props.user.admin" class="flex flex-col ml-4 w-4/12">
+                                <div v-if="$page.props.user.admin" class="flex flex-col sm:pl-4 w-full sm:w-2/4">
                                     <label for="">Controller Namespace</label>
-                                    <input v-model="form.controller" type="text" class="input">
+                                    <input v-model="form.controller" type="text" class="input w-full">
                                 </div>
                             </div>
 
@@ -154,12 +153,12 @@
 
                 <hr class="my-8" v-if="$page.props.user.admin">
 
-                <div class="flex" v-if="$page.props.user.admin">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap" v-if="$page.props.user.admin">
+                    <div class="w-full md:w-1/2 xl:w-4/12 mb-4 md:mb-0 pr-8 xl:pr-12">
                         <h2 class="text-xl">API</h2>
                         <p>Create a bearer token for this project</p>
                     </div>
-                    <div class="w-8/12">
+                    <div class="w-full md:w-1/2 xl:w-8/12">
                         <form action="">
                             
                             <div class="flex">
@@ -176,12 +175,12 @@
 
                 <hr class="my-8" v-if="$page.props.user.admin">
 
-                <div class="flex" v-if="$page.props.user.admin">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap" v-if="$page.props.user.admin">
+                    <div class="w-full xl:w-4/12 md:pr-12">
                         <h2 class="text-xl">Add Project Member</h2>
                         <p>Add a new member to the project, allowing them to collaborate with you.</p>
                     </div>
-                    <div class="w-8/12">
+                    <div class="w-full xl:w-8/12">
                         <form @submit.prevent="submitAddMember">
 
                             <div class="max-w-xl text-sm text-ms-gray-120 mb-8">
@@ -192,21 +191,21 @@
                                 <!-- Member Name -->
                                 <div class="flex flex-col w-full mr-2">
                                     <label for="">Name</label>
-                                    <input v-model="memberForm.name" type="text" class="input" @input="validateName">
+                                    <input v-model="memberForm.name" type="text" class="input w-full" @input="validateName">
                                     <p class="text-sm text-red-600">{{ validationErrors.name }}</p>
                                 </div>
                                 <!-- Member Email -->
                                 <div class="flex flex-col w-full ml-2">
                                     <label for="">E-mail</label>
-                                    <input v-model="memberForm.email" type="text" class="input" @input="validateEmail">
+                                    <input v-model="memberForm.email" type="text" class="input w-full" @input="validateEmail">
                                     <p class="text-sm text-red-600">{{ validationErrors.email }}</p>
                                 </div>
                             </div>
 
                             <div class="flex flex-col mt-8">
                                 <label class="" for="">Role</label>
-                                <ul class="flex">
-                                    <label :for="role" class="bg-white cb-container p-6 shadow-ms rounded-md hover:bg-ms-gray-20 m-2" v-for="rules, role in availableRoles">
+                                <ul class="flex flex-wrap sm:flex-nowrap">
+                                    <label :for="role" class="bg-white m-0 mb-4 sm:m-2 w-full sm:w-auto cb-container p-6 shadow-ms rounded-md hover:bg-ms-gray-20" v-for="rules, role in availableRoles">
                                         <input :id="role" type="radio" v-model="memberForm.role" :value="role" @input="validateRole"> <b>{{ role }}</b>
                                         <p class="text-xs mt-2">{{ rules.description }}</p>
                                         <div class="checkmark"></div>
@@ -215,7 +214,7 @@
                                 <p class="text-sm text-red-600">{{ validationErrors.role }}</p>
                             </div>
 
-                            <div class="flex justify-end w-full mt-8">
+                            <div class="flex flex-wrap justify-end w-full sm:mt-8">
                                 <button type="submit" class="border border-ms-gray-160 px-4 py-1 hover:bg-ms-gray-40 ml-2 font-bold">Add</button>
                             </div>
 
@@ -225,12 +224,12 @@
 
                 <hr class="my-8">
 
-                <div class="flex">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap">
+                    <div class="w-full xl:w-4/12 xl:pr-12">
                         <h2 class="text-xl">Project Members</h2>
                         <p>All of the people that are part of this project.</p>
                     </div>
-                    <div class="w-8/12">
+                    <div class="w-full xl:w-8/12">
                         <form action="">
 
 

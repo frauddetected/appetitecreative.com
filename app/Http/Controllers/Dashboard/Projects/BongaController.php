@@ -206,7 +206,9 @@ class BongaController extends MainController
             $packageChart = [];
 
             foreach($data['stats']['scans']['top'] as $c){
-                $packageChart[$c->title] = $c->views;
+                if(isset($c->title)){
+                    $packageChart[$c->title] = $c->views;
+                }
             }  
 
             /* Scans vs Visitors vs Registrations */

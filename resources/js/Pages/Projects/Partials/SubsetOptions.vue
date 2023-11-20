@@ -1,5 +1,5 @@
 <template>
-    <div class="shadow-2xl w-2/12 ml-12 p-4 top-16 sticky">
+    <div class="shadow-2xl w-full md:w-1/3 lg:w-2/12 mb-6 md:mb-0 p-4 md:top-16 md:sticky order-1 md:order-none">
         
         <p class="font-light text-lg py-4">Subset options</p>
         

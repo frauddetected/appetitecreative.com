@@ -14,15 +14,15 @@
         </template>
 
         <div>
-            <div class="mx-auto py-10 px-20 flex items-start">
+            <div class="mx-auto py-10 px-4 md:px-6 xl:px-20 flex flex-wrap items-start">
 
-                <div class="w-10/12">
-                    <div class="flex">
-                        <div class="w-3/12 pr-12">
+                <div class="w-full md:w-2/3 lg:w-10/12 order-2 md:order-none md:pr-12">
+                    <div class="flex flex-wrap">
+                        <div class="w-full md:w-4/12 lg:w-2/12 pr-8">
                             <h2 class="text-xl">Quiz</h2>
                             <p>...</p>
                         </div>
-                        <div class="w-9/12">
+                        <div class="w-full md:w-8/12 lg:w-10/12 overflow-auto">
 
                             <table class="table">
                                 <tr class="header">

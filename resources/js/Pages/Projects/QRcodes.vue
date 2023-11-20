@@ -16,14 +16,11 @@
                 </button>
             </nav>
         </template>
-
         <div>
-            <div class="mx-auto py-10 px-20 flex items-start">
-
-                <div class="w-10/12">
-
-                <div class="flex">
-                    <div class="w-4/12 pr-12">
+            <div class="mx-auto py-10 px-4 md:px-6 xl:px-20 flex flex-wrap items-start">
+                <div class="w-full md:w-2/3 lg:w-10/12 order-2 md:order-none pr-12">
+                <div class="flex flex-wrap">
+                    <div class="w-full md:w-4/12 lg:w-2/12 pr-8">
                         <h2 class="text-xl">QR Codes</h2>
                         
                         <ul class="mt-5">
@@ -43,8 +40,7 @@
                         </nav>
                         
                     </div>
-                    <div class="w-8/12">
-
+                    <div class="w-full md:w-8/12 lg:w-10/12 overflow-auto">
                         <table class="table">
                             <tr class="header">
                                 <th>Title</th>

@@ -10,9 +10,9 @@
             </div>
         </h2>
 
-        <div class="flex justify-center mt-8 mb-4">
-            <div class="flex w-1/4 justify-center">
-                <div class="w-2/3 text-center">
+        <div class="flex flex-wrap justify-center mt-8 mb-4">
+            <div class="flex w-1/2 sm:w-1/4 justify-center">
+                <div class="w-full sm:w-2/3 text-center">
                     <h2 class="uppercase text-xs">Unique Users <br> Answers</h2>
                     <h1 class="text-3xl ml-auto font-bold">
                         {{ stats.users.uniques }}
@@ -20,8 +20,8 @@
                 </div>
             </div>
             
-            <div class="flex w-1/4 justify-center">
-                <div class="w-2/3 text-center">
+            <div class="flex w-1/2 sm:w-1/4 justify-center">
+                <div class="w-full sm:w-2/3 text-center">
                     <h2 class="uppercase text-xs">Avg Repeated Questions <br> Per User</h2>
                     <h1 class="text-3xl ml-auto font-bold">
                         {{ nFormatter(stats.users.repeat, 2) }}

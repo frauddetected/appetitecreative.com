@@ -299,7 +299,7 @@ label{
   @apply bg-ms-magenta-20 text-white cursor-pointer;
 }
 .two-block-custom,
-.five-block-custom,
+.four-block-custom,
 .two-block-bottom {
   gap: 24px;
 }
@@ -316,7 +316,7 @@ label{
     width: calc(41.666667% - 12px);
     margin: 0;
   }
-  .five-block-custom .in-block-custom {
+  .four-block-custom .in-block-custom {
     width: calc(25% - 18px);
   }
   .two-block-bottom .two-block-left {
@@ -324,5 +324,10 @@ label{
   }
   .two-block-bottom .two-block-right {
     width: calc(33.333333% - 12px);
+  }
+}
+@media (min-width:768px) and (max-width:1023px) {
+  .four-block-custom .in-block-custom {
+    width: calc(50% - 12px);
   }
 }
