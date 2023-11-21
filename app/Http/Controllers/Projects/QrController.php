@@ -29,7 +29,7 @@ class QrController extends Controller
         
         $data['project_id'] = $id;
         $data['codes'] = QR::where('project_id', $id)
-            ->selectRaw('title, keyword, scans, is_unique, COUNT(*) as total, SUM(CASE WHEN is_burn = 1 THEN 1 ELSE 0 END) as burned, qr_link')
+            ->selectRaw('id, title, keyword, scans, is_unique, COUNT(*) as total, SUM(CASE WHEN is_burn = 1 THEN 1 ELSE 0 END) as burned, qr_link')
             ->groupBy('title')
             ->orderBy('total', 'desc')
             ->paginate(20);
@@ -193,4 +193,14 @@ class QrController extends Controller
         } 
         return true;
     }
+
+    public function actions()
+   {
+        if(request('delCode')):
+            QR::find(request('delCode'))->delete();
+            return redirect()->back()->with('status','QR code deleted successfully.');
+        else:
+            return redirect()->back()->with('status','Failed to delete QR code!');
+        endif;
+    } 
 }

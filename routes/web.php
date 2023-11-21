@@ -272,6 +272,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function (
         Route::post('/view/qr/details/save', [QrController::class, 'detailsSave'])->name('projects.qr.details.save');
         Route::post('/check/qr/limit', [QrController::class, 'checkLimit'])->name('projects.qr.limit');
         Route::put('/view/qr/details/update', [QrController::class, 'updateQr'])->name('projects.qr.updateQr');
+        Route::post('/view/qr/actions', [QrController::class, 'actions'])->name('projects.qr.actions');
 
         /* Alpha Num */
         Route::get('/view/alphanum', [AlphaController::class, 'view'])->name('projects.alphanum.view');
