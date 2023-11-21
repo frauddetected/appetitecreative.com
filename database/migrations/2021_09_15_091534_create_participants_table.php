@@ -11,7 +11,7 @@ class CreateParticipantsTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
@@ -33,7 +33,7 @@ class CreateParticipantsTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('participants');
     }

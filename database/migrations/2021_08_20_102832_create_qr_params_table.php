@@ -11,7 +11,7 @@ class CreateQrParamsTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('qrcode_params', function (Blueprint $table) {
             $table->id();
@@ -26,7 +26,7 @@ class CreateQrParamsTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('qrcode_params');
     }

@@ -11,7 +11,7 @@ class CreatePersonalAccessTokensTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -29,7 +29,7 @@ class CreatePersonalAccessTokensTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('personal_access_tokens');
     }

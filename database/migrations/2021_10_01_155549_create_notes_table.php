@@ -11,7 +11,7 @@ class CreateNotesTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
@@ -28,7 +28,7 @@ class CreateNotesTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('notes');
     }

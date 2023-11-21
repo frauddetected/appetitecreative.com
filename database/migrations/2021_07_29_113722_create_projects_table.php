@@ -11,7 +11,7 @@ class CreateProjectsTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
@@ -35,7 +35,7 @@ class CreateProjectsTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('projects');
     }

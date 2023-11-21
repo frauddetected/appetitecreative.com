@@ -11,7 +11,7 @@ class CreateProjectUserTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('project_user', function (Blueprint $table) {
             $table->id();
@@ -29,7 +29,7 @@ class CreateProjectUserTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('project_user');
     }

@@ -41,7 +41,7 @@ class SourcesController extends Controller
         $source->pivot->increment('count');
         */
 
-        return redirect()->back()->with('status','Saved');
+        return redirect()->back()->with('status','Saved successfully.');
     }
 
     public function store()
@@ -56,6 +56,6 @@ class SourcesController extends Controller
             $project->sources()->attach($id, ['is_active' => true]);
         }        
 
-        return redirect()->back()->with('status','New source created');
+        return redirect()->back()->with('status','New source created successfully.');
     }
 }

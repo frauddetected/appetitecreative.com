@@ -17,7 +17,7 @@
                                 </Link>
                             </div>
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 lg:flex">
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </jet-nav-link>
@@ -39,7 +39,7 @@
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <div class="hidden sm:flex sm:items-center justify-end lg:justify-start sm:ml-6 w-full lg:w-auto">
 
                             <!-- Settings Dropdown -->
                             <div class="relative">
@@ -128,7 +128,7 @@
                                     </template>
                                 </jet-dropdown>
                             </div>
-
+                            
                             <!-- Settings Dropdown -->
                             <div class="relative">
                                 <jet-dropdown align="right" width="48">
@@ -175,7 +175,7 @@
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="-mr-2 flex items-center sm:hidden">
+                        <div class="-mr-2 flex items-center lg:hidden">
                             <button @click="showingNavigationDropdown = ! showingNavigationDropdown" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path :class="{'hidden': showingNavigationDropdown, 'inline-flex': ! showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -187,13 +187,13 @@
                 </div>
 
                 <!-- Responsive Navigation Menu -->
-                <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
+                <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="lg:hidden">
+                    
                     <div class="pt-2 pb-3 space-y-1">
                         <jet-responsive-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </jet-responsive-nav-link>
                     </div>
-
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="flex items-center px-4">
@@ -263,7 +263,7 @@
 
             <!-- Page Heading -->
             <header class="bg-white shadow-ms top-0 sticky z-20" v-if="$slots.header">
-                <div class="mx-auto h-11 px-4 flex justify-between items-center sm:px-6 lg:px-8">
+                <div class="mx-auto sm:h-11 px-4 flex flex-wrap justify-between items-center sm:px-6 lg:px-8">
                     <slot name="header"></slot>
                 </div>
             </header>
@@ -416,9 +416,11 @@
             },
             "$page.props.errorBags.default": function(v){
                 if(v){
-                    v[0].forEach(msg => {
-                        this.toast.error(msg);
-                    });
+                    if(v[0] !== undefined){
+                        v[0].forEach(msg => {
+                            this.toast.error(msg);
+                        });
+                    }
                 }
             }
         }

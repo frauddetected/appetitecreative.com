@@ -22,22 +22,22 @@
         </template>
 
         <div>
-            <div class="mx-auto py-10 px-20 flex items-start">
+            <div class="mx-auto pt-4 py-10 px-4 md:px-6 xl:px-20 flex flex-wrap items-start">
 
-                <div class="w-10/12">
+                <div class="w-full md:w-2/3 lg:w-10/12 order-2 md:order-none md:pr-12">
 
-                <div class="flex">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap">
+                    <div class="w-full lg:w-4/12 lg:pr-12">
                         <h2 class="text-xl">Analytics Platform</h2>
                         <p>Choose between the popular Google platform and a lighter privacy oriented solution.</p>
                     </div>
-                    <div class="w-8/12">
+                    <div class="w-full lg:w-8/12 mt-4 lg:mt-0">
                         <form action="">
 
                             <div class="flex flex-col">
                                 <label class="" for="">Select Analytics</label>
-                                <ul class="flex">
-                                    <label for="plausible" class="bg-white cb-container p-8 w-full font-normal shadow-ms rounded-md hover:bg-ms-gray-20 m-2">
+                                <ul class="flex flex-wrap md:flex-nowrap">
+                                    <label for="plausible" class="bg-white m-0 mb-4 md:m-2 cb-container p-8 w-full font-normal shadow-ms rounded-md hover:bg-ms-gray-20">
                                         <input id="plausible" type="radio" value="plausible" v-model="form.platform">
                                         <img class="h-10 mx-auto" src="https://d33wubrfki0l68.cloudfront.net/7fe1e9eb24029471f1b2c53cbcf8c4ad0bc87af7/0b5a6/assets/images/icon/plausible_logo.compressed.png" alt="">
                                         <p class="text-sm mt-6">Simple, lightweight and privacy-friendly Google Analytics alternative. website analytics tool. No cookies and fully compliant with GDPR, CCPA and PECR.</p>
@@ -58,14 +58,14 @@
                                 <div class="flex">
                                     <div class="flex flex-col w-1/2 mr-2">
                                         <label for="">Domain Name</label>
-                                        <input type="text" class="input" v-model="form.details.domain_name">
+                                        <input type="text" class="input w-full" v-model="form.details.domain_name">
                                     </div>
                                     <div class="flex flex-col w-1/2">
                                         <label for="">Auth Code</label>
-                                        <input type="text" class="input" v-model="form.details.auth_code">
+                                        <input type="text" class="input w-full" v-model="form.details.auth_code">
                                     </div>
                                 </div>
-                                <button @click="createPlausible">Create</button>
+                                <button class="mt-3 sm:mt-0" @click="createPlausible">Create</button>
                             </div>
 
                             <!-- Google Analytics -->

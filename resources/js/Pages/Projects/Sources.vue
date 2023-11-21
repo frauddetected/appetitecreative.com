@@ -13,17 +13,17 @@
         </template>
 
         <div>
-            <div class="mx-auto py-10 px-20 flex items-start">
+            <div class="mx-auto py-10 px-4 md:px-6 xl:px-20 flex flex-wrap items-start">
 
-                <div class="w-10/12">
+                <div class="w-full md:w-2/3 lg:w-10/12 order-2 md:order-none md:pr-12">
 
-                <div class="flex">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap">
+                    <div class="w-full md:w-4/12 lg:w-2/12 pr-8">
                         <h2 class="text-xl">Sources</h2>
                         <p>...</p>
                         <p></p>
                     </div>
-                    <div class="w-8/12">
+                    <div class="w-full md:w-8/12 lg:w-10/12 overflow-auto">
 
                         <table class="table">
                             <tr class="header">
@@ -43,7 +43,7 @@
                                 <td class="text-center">
                                     <span v-if="$page.props.user.role.level <= 1" @click="toggleSource(source.id)"><i class="ms-Icon ms-Icon--Delete"></i></span>
                                 </td>
-                                <td></td>
+                                
                             </tr>
                         </table>
 
@@ -77,6 +77,7 @@
                                 track-by="id"
                                 label="title"
                             />
+                            <span class="text-red-500">{{ sourceError }}</span>
                         </div>
 
                     </div>
@@ -106,6 +107,8 @@
 
         data(){
             return{
+                sourceError: '',
+                valid: true,
                 addNewCode: false,
                 form: this.$inertia.form({
                     source: {}
@@ -119,12 +122,20 @@
 
         methods: {
             save(){
-                this.form.post(route('projects.sources.store'), {
-                    preserveState: true,
-                    onSuccess: () => {
-                        this.addNewCode = false
-                    }
-                })
+                this.valid = true;
+                if(Object.keys(this.form.source).length === 0){
+                    this.valid = false;
+                    this.sourceError = 'Please select source.'
+                }
+                if(this.valid){
+                    this.form.post(route('projects.sources.store'), {
+                        errorBag: 'save',
+                        preserveState: true,
+                        onSuccess: () => {
+                            this.addNewCode = false
+                        }
+                    })
+                }
             },
             close(){
                 this.addNewCode = false

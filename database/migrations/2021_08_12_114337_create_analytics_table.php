@@ -11,7 +11,7 @@ class CreateAnalyticsTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('analytics', function (Blueprint $table) {
             $table->id();
@@ -27,7 +27,7 @@ class CreateAnalyticsTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('analytics');
     }

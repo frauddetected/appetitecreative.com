@@ -39,7 +39,7 @@ class PrizesController extends Controller
         $prize->project_id = $id;
 
         if($prize->save()){
-            return redirect()->back()->with('status','Prize added');
+            return redirect()->back()->with('status','Prize added successfully.');
         }
     }
 }

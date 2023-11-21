@@ -11,7 +11,7 @@ class CreateSessionsTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -28,7 +28,7 @@ class CreateSessionsTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('sessions');
     }

@@ -32,7 +32,7 @@ class I18NController extends Controller
         $i18n->languages = json_encode(request('languages'));
 
         if($i18n->save()){
-            return redirect()->back()->with('status','i18n settings has been saved');
+            return redirect()->back()->with('status','i18n settings has been saved.');
         }
     }
 

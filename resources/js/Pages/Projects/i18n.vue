@@ -13,16 +13,16 @@
         </template>
 
         <div>
-            <div class="mx-auto py-10 px-20 flex items-start">
+            <div class="mx-auto py-10 px-4 md:px-6 xl:px-20 flex flex-wrap items-start">
 
-                <div class="w-10/12">
+                <div class="w-full md:w-2/3 lg:w-10/12 order-2 md:order-none md:pr-12">
 
-                <div class="flex">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap sm:flex-nowrap">
+                    <div class="w-full sm:w-4/12 mb-4 sm:mb-0 sm:pr-12">
                         <h2 class="text-xl">Countries</h2>
                         <p>Choose the countries</p>
                     </div>
-                    <div class="w-8/12">
+                    <div class="w-full sm:w-8/12">
                         <form action="">
 
                             <VueMultiselect
@@ -41,12 +41,12 @@
 
                 <hr class="my-8" />
 
-                <div class="flex">
-                    <div class="w-4/12 pr-12">
+                <div class="flex flex-wrap sm:flex-nowrap">
+                    <div class="w-full sm:w-4/12 mb-4 sm:mb-0 sm:pr-12">
                         <h2 class="text-xl">Languages</h2>
                         <p>Choose the languages</p>
                     </div>
-                    <div class="w-8/12">
+                    <div class="w-full sm:w-8/12">
                         <form action="">
 
                             <VueMultiselect

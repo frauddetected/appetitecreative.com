@@ -13,39 +13,39 @@
         </template>
 
         <div>
-            <div class="mx-auto py-10 px-20 flex items-start">
+            <div class="mx-auto py-10 px-4 md:px-6 xl:px-20 flex flex-wrap items-start">
 
-                <div class="w-10/12">
+                <div class="w-full md:w-2/3 lg:w-10/12 order-2 md:order-none md:pr-12">
 
-                    <div class="flex">
-                        <div class="w-4/12 pr-12">
+                    <div class="flex flex-wrap">
+                        <div class="w-full md:w-4/12 lg:w-2/12 pr-8">
                             <h2 class="text-xl">Style</h2>
                             <p>Customize the styling</p>
                         </div>
-                        <div class="w-8/12">
+                        <div class="w-full md:w-8/12 lg:w-10/12 overflow-auto mt-4 md:mt-0">
                             <div class="flex">
                                 <div class="flex flex-col w-6/12 relative">
                                     <label for="">Primary Color</label>
-                                    <input type="text" maxlength="7" v-model="form.style.primary_color" class="input">
+                                    <input type="text" maxlength="7" v-model="form.style.primary_color" class="input w-full">
                                     <ColorPicker className="mr-2 absolute bottom-[7px] right-[-2px]" :color="form.style.primary_color" v-model="form.style.primary_color" />
                                 </div>
                                 <div class="flex flex-col ml-4 w-6/12 relative">
                                     <label for="">Secondary Color</label>
-                                    <input type="text" maxlength="7" color="" v-model="form.style.secondary_color" class="input">
+                                    <input type="text" maxlength="7" color="" v-model="form.style.secondary_color" class="input w-full">
                                     <ColorPicker className="mr-2 absolute bottom-[7px] right-[-2px]" :color="form.style.secondary_color" v-model="form.style.secondary_color" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <hr class="my-12" />
+                    <hr class="my-6 sm:my-12" />
 
-                    <div class="flex">
-                        <div class="w-4/12 pr-12">
+                    <div class="flex flex-wrap md:flex-nowrap">
+                        <div class="w-full md:w-4/12 lg:w-2/12 pr-8">
                             <h2 class="text-xl">Messages</h2>
                             <p>The messages to be shared</p>
                         </div>
-                        <div class="w-8/12">
+                        <div class="w-full md:w-8/12 lg:w-10/12 overflow-auto mt-4 md:mt-0">
 
                         <ul v-if="project.i18n" class="-mt-6">
                             <li v-for="country,i in project.i18n.countries">

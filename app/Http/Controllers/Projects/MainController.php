@@ -17,6 +17,7 @@ use App\Models\LogAction;
 use Illuminate\Support\Facades\Mail;
 use Spatie\QueryBuilder\QueryBuilder;
 use Schema;
+use Illuminate\Support\Facades\Validator;
 
 class MainController extends Controller
 {
@@ -95,7 +96,7 @@ class MainController extends Controller
         endif;
 
         if($project->save()):
-            return redirect()->back()->with('status', 'Details updated');
+            return redirect()->back()->with('status', 'Details updated successfully.');
         endif;
     }
 
@@ -179,7 +180,7 @@ class MainController extends Controller
         $project->api_token = Hash::make(Str::random(60));
         
         if($project->save()):
-            return redirect()->route('projects.view', $project->id)->with('status','Project created');
+            return redirect()->route('projects.view', $project->id)->with('status','Project created successfully.');
         else:
             return redirect()->back()->withErrors(['Project could not be created']);
         endif;
@@ -208,7 +209,7 @@ class MainController extends Controller
             $pid = current_project()->id;
             $user->otherProjects()->sync([$pid => ['role' => request('role')]]);
             
-            return redirect()->back()->with('status', 'Member role updated');
+            return redirect()->back()->with('status', 'Member role updated successfully.');
         
         else:
             
@@ -217,13 +218,31 @@ class MainController extends Controller
         endif;
     }
 
-    public function addMember()
+    public function addMember(Request $request)
     {
+        // Validator::make($request->all(), [
+        //     'email' => ['required', 'email', 'unique:users'],
+        // ])->validateWithBag('submitAddMember');
+        
+        // // Manually validate the request data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users',
+            // Add more validation rules as needed
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            $errors = json_decode($validator->errors());
+            if(isset($errors->email)){
+                $emailError = $errors->email;
+                return redirect()->back()->with('status', $emailError[0]);
+            }
+        }
+
         $pid = current_project()->id;
         $project = current_project();
 
         if(project_role() == 'superadmin'):
-
+            
             $user = User::whereEmail(request('email'))->first();
             $randomPassword = Str::random(12);
             
@@ -246,10 +265,10 @@ class MainController extends Controller
                 
             endif;
 
-            return redirect()->back()->with('status', 'Member added');
+            return redirect()->back()->with('status', 'Member added successfully.');
 
         endif;        
 
-        return redirect()->back()->withErrors(['You cannot add a member']);
+        return redirect()->back()->withErrors(["You can't add a member"]);
     }
 }

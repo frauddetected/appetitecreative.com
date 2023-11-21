@@ -265,6 +265,6 @@ class DmfController extends MainController
         $participant->profile = json_encode($json);
         $participant->save();
 
-        return redirect()->back()->with('status','Address updated');
+        return redirect()->back()->with('status','Address updated Successfully.');
     }
 }

@@ -40,9 +40,17 @@ class UserController extends Controller
         }
 
         $recordsTotal = $users->count();
-        $users = $users->orderBy('users.id','DESC')->skip($start) // Apply the 'start' offset
-                            ->take($length) // Apply the 'length' limit
-                            ->get(); // Retrieve the data
+        // $users = $users->orderBy('users.id','DESC')->skip($start) // Apply the 'start' offset
+        //                     ->take($length) // Apply the 'length' limit
+        //                     ->get(); // Retrieve the data
+
+        $users = $users->orderBy('users.id','DESC');
+        if($length != -1){
+            $users = $users->skip($start) // Apply the 'start' offset
+            ->take($length); // Apply the 'length' limit
+        }
+        
+        $users = $users->get(); // Retrieve the data
         $data = [];
         foreach ($users as $user) {
             $plan_type = '-';
@@ -88,5 +96,18 @@ class UserController extends Controller
         }
         $user->save();
         return redirect()->back()->with('status', $msg);
+    }
+    
+    public function userDelete(){
+        $getId = request()->user_id;
+        $user = User::find($getId);
+        if ($user) {
+            $user->delete();
+            $msg = 'User has been deleted.';
+        } else {
+            $msg = 'User not found or could not be deleted.';
+        }
+        return redirect()->back()->with('status', $msg);
+
     }
 }

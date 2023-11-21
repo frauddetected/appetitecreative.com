@@ -132,14 +132,14 @@
                 </vue-countdown>
             </div>
 
-            <div class="flex">
+            <div class="flex flex-wrap two-block-custom">
 
                 <!-- Main Chart -->
                 <transition name="fade" mode="out-in">
-                <div v-if="grid.scans" class="w-7/12 p-6 bg-white rounded-sm mr-3">
+                <div v-if="grid.scans" class="two-block-custom-left w-full md:w-7/12 p-6 bg-white rounded-sm mr-3">
 
-                  <div class="flex w-full mb-8 pl-8 pr-2">
-                      <div class="w-3/12 text-center" v-tippy="{ content: 'This number tracks a QR code scans.' }">
+                  <div class="flex flex-wrap w-full mb-8 xl:pl-8 pr-2">
+                      <div class="w-1/2 lg:w-3/12 xl:w-1/4 text-center" v-tippy="{ content: 'This number tracks a QR code scans.' }">
                           <h2 class="uppercase">
                                 Scans (QR Code)
                                 <a class="hover:text-green-600" :href="`/export/daily?period=${rangeUnixStart}@${rangeUnixEnd}`">
@@ -151,7 +151,7 @@
                           </h1>
                           <span class="rounded-full w-2 h-2 inline-block bg-ms-orange-10"></span>
                       </div>
-                      <div class="w-3/12 text-center" v-tippy="{ content: 'This number tracks forms / e-mails on database.' }">
+                      <div class="w-1/2 lg:w-3/12 xl:w-1/4 text-center" v-tippy="{ content: 'This number tracks forms / e-mails on database.' }">
                           <h2 class="uppercase">
                                 E-mails 
                                 <a class="hover:text-green-600" :href="`/export/emails?period=${rangeUnixStart}@${rangeUnixEnd}`">
@@ -163,13 +163,13 @@
                           </h1>
                           <span class="rounded-full w-2 h-2 inline-block bg-ms-cyan-10"></span>
                       </div>
-                      <div class="w-4/12 text-center" v-tippy="{ content: 'Average number of scans per user.' }">
+                      <div class="w-1/2 lg:w-4/12 xl:w-1/4 text-center" v-tippy="{ content: 'Average number of scans per user.' }">
                           <h2 class="uppercase">Avg Scans / User</h2>
                           <h1 class="text-4xl ml-auto font-bold">
                               {{ (stats.scans.count / stats.registrations.count).toFixed(1) }}
                           </h1>
                       </div>
-                      <div class="w-4/12 text-center" v-tippy="{ content: 'The total of ALL the individual of entries (recipe, sharing, popup).' }">
+                      <div class="w-1/2 lg:w-4/12 xl:w-1/4 text-center" v-tippy="{ content: 'The total of ALL the individual of entries (recipe, sharing, popup).' }">
                           <h2 class="uppercase">Submissions</h2>
                           <h1 class="text-4xl ml-auto font-bold">
                               {{ nFormatter(stats.leaderboard_stats.count, 1) }}
@@ -181,13 +181,13 @@
                   </div>
                     
                 </div>
-                <div v-else class="w-7/12 p-6 bg-white rounded-sm mr-3 flex justify-center items-center">
+                <div v-else class="two-block-custom-left w-full md:w-7/12 p-6 bg-white rounded-sm mr-3 flex justify-center items-center">
                     <Loader type="bars" />
                 </div>
                 </transition>
 
                 <transition name="fade" mode="out-in">
-                <div v-if="grid.scans" class="w-5/12 ml-3 bg-white rounded-sm flex flex-wrap items-start relative">
+                <div v-if="grid.scans" class="two-block-custom-right w-full md:w-5/12 ml-3 bg-white rounded-sm flex flex-wrap items-start relative">
 
                         <div class="w-full">
 
@@ -205,13 +205,13 @@
 
                         </div>
 
-                        <div class="p-6 flex w-full">
+                        <div class="p-6 flex flex-wrap w-full">
 
-                            <div class="w-7/12">
+                            <div class="w-full md:w-7/12">
                                 <pie-chart class="p-12" :legend="false" :library="{ animation: { duration: 3000 }}" :colors="['#00bcf2','#8378de','#005b70','#c239b3','#881798','#0078d4','#8764b8']" :data="charts.skus"></pie-chart>
                             </div>
 
-                            <section v-if="filters.scans=='Package'" class="flex-table !w-5/12">
+                            <section v-if="filters.scans=='Package'" class="flex-table w-full sm:w-5/12">
                                 <div class="flex-table-header">
                                     <div class="col">Top</div>
                                     <div class="col text-right">Scans</div>
@@ -242,11 +242,11 @@
 
             </div>
 
-        <div class="flex gap-x-6 mt-6">
+        <div class="flex flex-wrap gap-x-6 mt-6 four-block-custom">
 
             <!-- Games -->
             <transition name="fade" mode="out-in">
-            <div v-if="grid.games" class="w-1/3 bg-white rounded-sm">
+            <div v-if="grid.games" class="w-full in-block-custom md:w-1/3 bg-white rounded-sm">
 
                 <div class="w-full flex flex-col">
                     <h2 class="flex w-full p-4 border-b mb-4">
@@ -265,13 +265,13 @@
                 </div>
 
             </div>
-            <div v-else class="w-1/3 bg-white rounded-sm mx-3 flex justify-center items-center">
+            <div v-else class="w-full in-block-custom md:w-1/3 bg-white rounded-sm mx-3 flex justify-center items-center">
                 <Loader type="table" />
             </div>
             </transition>
             <!-- end games -->
 
-            <div v-if="grid.share" class="w-1/3 bg-white rounded-sm">
+            <div v-if="grid.share" class="w-full in-block-custom md:w-1/3 bg-white rounded-sm">
                 
                 <div class="w-full border-b p-4 mb-4">
                     <h2>Social by <span class="border-b font-bold border-black border-dashed">Shares</span></h2>
@@ -328,11 +328,11 @@
                 </section>
 
             </div>
-            <div v-else class="w-1/3 bg-white rounded-sm mr-3 flex justify-center items-center">
+            <div v-else class="w-full in-block-custom sm:w-1/3 bg-white rounded-sm mr-3 flex justify-center items-center">
                 <Loader type="table" />
             </div>
 
-            <div v-if="grid.games" class="w-1/3 bg-white rounded-sm">
+            <div v-if="grid.games" class="w-full in-block-custom md:w-1/3 bg-white rounded-sm">
                 
                 <div class="w-full flex flex-col">
 
@@ -422,11 +422,11 @@
                 </section>
 
             </div>
-            <div v-else class="w-1/3 bg-white rounded-sm mr-3 flex justify-center items-center">
+            <div v-else class="w-full in-block-custom sm:w-1/3 bg-white rounded-sm mr-3 flex justify-center items-center">
                 <Loader type="table" />
             </div>
 
-            <div v-if="grid.profile" class="w-1/3 bg-white rounded-sm">
+            <div v-if="grid.profile" class="w-full in-block-custom md:w-1/3 bg-white rounded-sm">
 
                 <div class="w-full flex flex-col">
                     <h2 class="flex w-full border-b p-4 mb-4">
@@ -480,17 +480,17 @@
 
                 </div>            
             </div>
-            <div v-else class="w-1/3 bg-white rounded-sm ml-3 flex justify-center items-center">
+            <div v-else class="w-full in-block-custom md:w-1/3 bg-white rounded-sm ml-3 flex justify-center items-center">
                 <Loader type="table" />
             </div>
         
         </div>
 
         <!-- other row -->
-        <div class="flex gap-x-6 mt-6">
-            <GridQuiz :className="'w-8/12'" :fullUnixRange="fullUnixRange" :brand="brand" :country="countryName" />            
+        <div class="flex flex-wrap gap-x-6 two-block-bottom mt-6">
+            <GridQuiz :className="'two-block-left w-full md:w-8/12'" :fullUnixRange="fullUnixRange" :brand="brand" :country="countryName" />            
             <transition name="fade" mode="out-in">
-            <div v-if="grid.leaderboard" class="w-4/12 bg-white rounded-sm">
+            <div v-if="grid.leaderboard" class="two-block-right w-full md:w-4/12 bg-white rounded-sm">
 
                 <h2 class="flex w-full p-4 border-b mb-4">
                     Leaderboard by 

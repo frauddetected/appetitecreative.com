@@ -26,6 +26,7 @@ use App\Models\Note;
 use Carbon\Carbon;
 use Spatie\Analytics\Period;
 use Schema;
+use Illuminate\Support\Facades\Validator;
 
 class MainController extends Controller
 {
@@ -37,7 +38,6 @@ class MainController extends Controller
     public function index()
     {
         $data['project'] = current_project();
-
         return Inertia::render('Dashboard/Index', $data);
     }
 
@@ -165,7 +165,7 @@ class MainController extends Controller
 
             $count = PrizeWinner::whereProjectId(current_project()->id)->whereUserId($leaderboard->user_id)->get()->count();
             if($count):
-                return redirect()->back()->with('status', 'This user already won');
+                return redirect()->back()->with('status', 'This user already won.');
             endif;
 
             $p->user_id = $leaderboard->user_id;
@@ -173,11 +173,11 @@ class MainController extends Controller
             $p->periodicity = $prize->periodicity;
             $p->period = request('date');
 
-            if($p->save()) return redirect()->back()->with('status', 'success');
+            if($p->save()) return redirect()->back()->with('status', 'Successfully updated prize winner.');
 
         endif;
 
-        return redirect()->back()->with('status', 'Ooops...');
+        return redirect()->back()->with('status', 'Something went wrong!');
     }
 
     public function prizeWinnerDelete()
@@ -318,7 +318,7 @@ class MainController extends Controller
             return Inertia::render('Dashboard/Analytics/Google', $data);
 
         else:
-
+            
             $data['analytics'] = $analytics;
             return Inertia::render('Dashboard/Analytics/Plausible', $data);
             
@@ -327,9 +327,18 @@ class MainController extends Controller
 
     function notes(){
 
-        $data['notes'] = current_project()->notes()->with('user')->get();
+        $data['notes'] = current_project()->notes()->whereNotNull('title')->with('user')->get();
         
         if(request()->isMethod('post')):
+            $validator = Validator::make(request()->all(), [
+                'title' => ['required'],
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator) // Send validation errors to the view
+                    ->withInput(); // Preserve the input data in the form
+            }
 
             $note = new Note;
             $note->title = request('title');
@@ -338,7 +347,7 @@ class MainController extends Controller
             $note->user_id = Auth::user()->id;
 
             if($note->save()){
-                return redirect()->back()->with('status','Note created');
+                return redirect()->back()->with('status','Note created Successfully.');
             }
 
         endif;

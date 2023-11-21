@@ -15,7 +15,8 @@
                     scrolling="no" 
                     frameborder="0" 
                     loading="lazy" 
-                    style="width: 1px; min-width: 100%; height: 1760px;">
+                    style="width: 1px; min-width: 100%; height: 1760px;"
+                    id="iframe">
                 </iframe>
                     
             </div>
@@ -46,6 +47,21 @@
         },
         created(){
             this.src = `https://analytics.appetitecreative.com/share/${this.analytics.details.domain_name}?auth=${this.analytics.details.auth_code}&embed=true&theme=light&background=transparent`
-        }
+        },
+        mounted() {
+            setTimeout(function () {
+                var iframe = document.getElementById("iframe");
+                const iframeWindow = iframe.contentWindow;
+                const anchorTags = iframeWindow.document.getElementsByTagName("a");
+                for (let i = 0; i < anchorTags.length; i++) {
+                    anchorTags[i].addEventListener("click", (event) => {
+                        window.scrollTo(0, 0);
+                    });
+                }
+            }, 3000);
+        },
+        methods: {
+            // 
+        },
     }
 </script>

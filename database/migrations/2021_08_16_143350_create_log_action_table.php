@@ -11,7 +11,7 @@ class CreateLogActionTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('log_action', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -34,7 +34,7 @@ class CreateLogActionTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('log_action');
     }

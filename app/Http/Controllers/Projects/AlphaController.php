@@ -83,7 +83,7 @@ class AlphaController extends Controller
             }
         }
     
-        return redirect()->back()->with('status', 'Successfully inserted ' . $insertedCount . ' codes.');
+        return redirect()->back()->with('status', $insertedCount . ' codes inserted successfully.');
     }
     
     private function generateStartCode($digits) {

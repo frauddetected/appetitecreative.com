@@ -11,7 +11,7 @@ class CreatePrizesTable extends Migration
      *
      * @return void
      */
-    public function ups()
+    public function up()
     {
         Schema::create('prizes', function (Blueprint $table) {
             $table->id();
@@ -31,7 +31,7 @@ class CreatePrizesTable extends Migration
      *
      * @return void
      */
-    public function downs()
+    public function down()
     {
         Schema::dropIfExists('prizes');
     }

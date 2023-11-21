@@ -145,7 +145,7 @@
                             this.submitProcess = true;
                         },
                         onError: () => {
-                            this.submitProcess = true;
+                            this.submitProcess = false;
                         }
                     })
                 }

@@ -5,7 +5,7 @@
                 Notes
             </h2>
             <nav class="flex">
-                <button @click="addNewNote=true" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
+                <button @click="showAddNote" class="hover:bg-ms-gray-20 text-ms-gray-160 p-3 flex items-center">
                     <i class="ms-Icon ms-Icon--Add mr-2"></i> Add Note
                 </button>
             </nav>
@@ -46,6 +46,9 @@
                         <div class="flex flex-col w-full mb-4">
                             <label for="">Title</label>
                             <input v-model="form.title" type="text" class="input">
+                            <div class="mt-2">
+                                <p class="text-sm text-red-600" id="title-error"></p>
+                            </div>
                         </div>
 
                                            <editor
@@ -71,7 +74,7 @@
 
                 <template #footer>
                     <button @click="save" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
-                    <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
+                    <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30" @click="close">Cancel</button>
                 </template>
             </jet-dialog-modal>
     
@@ -106,10 +109,24 @@
             save(){
                 this.$inertia.post(route('notes'), this.form, {
                     preserveState: true,
-                    onSuccess(){
+                    onSuccess: () => {
                         this.addNewNote = false
+                        var titleError = document.getElementById("title-error");
+                        titleError.innerHTML = '';
+                    },
+                    onError(response) {
+                        var titleError = document.getElementById("title-error");
+                        titleError.innerHTML = response.title;
                     }
                 })
+            },
+            showAddNote(){
+                this.addNewNote = true;
+                this.form.title = '';
+                this.form.content = '';
+            },
+            close(){
+                 this.addNewNote = false
             }
         }
     }

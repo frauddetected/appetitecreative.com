@@ -80,7 +80,7 @@
                     email: '',
                     password: '',
                     remember: false
-                })
+                }),
             }
         },
 

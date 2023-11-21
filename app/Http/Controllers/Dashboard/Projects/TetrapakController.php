@@ -976,14 +976,14 @@ class TetrapakController extends MainController
             $lb->score = request('score');
             $lb->origin_value = request('origin_value');
             $lb->save();
-            return redirect()->back()->with('status','Updated');
+            return redirect()->back()->with('status','Participant updated successfully.');
         elseif(request('action') == 'date'):
             $lb->created_at = request('created_at');
             $lb->save();
-            return redirect()->back()->with('status','Updated');
+            return redirect()->back()->with('status','Participant updated successfully.');
         elseif(request('action') == 'delete'):
             $lb->delete();
-            return redirect()->back()->with('status','Deleted');
+            return redirect()->back()->with('status','Participant deleted successfully');
         endif;
     }
 }
