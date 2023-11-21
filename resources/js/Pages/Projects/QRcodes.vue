@@ -189,7 +189,7 @@
                     <ColorPicker color="#000000" className="mr-2" v-model="darkColor" />
                     <ColorPicker color="#ffffff" className="mr-auto" v-model="lightColor" />
                     
-                    <a id="download" :download="previewQR" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Download</a>
+                    <a id="download" :download="previewQR.keyword" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Download</a>
                     <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30" @click="close">Cancel</button>
 
                 </template>
