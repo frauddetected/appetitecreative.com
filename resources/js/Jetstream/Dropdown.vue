@@ -19,7 +19,7 @@
                     class="absolute z-50 shadow-2xl"
                     :class="[widthClass, alignmentClasses]"
                     style="display: none;"
-                    @click="open = false">
+                    >
                 <div class="ring-1 ring-black ring-opacity-5" :class="contentClasses">
                     <slot name="content"></slot>
                 </div>

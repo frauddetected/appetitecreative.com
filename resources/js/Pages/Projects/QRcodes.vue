@@ -71,7 +71,7 @@
                                         <template #popper>
                                             <div class="w-[600px] pt-8">
 
-                                                <div v-if="code.details.length" class="flex w-full mb-2" v-for="detail in code.details">
+                                                <div v-if="code.details?.length" class="flex w-full mb-2" v-for="detail in code.details">
                                                     
                                                     <VueMultiselect
                                                         v-model="detail.param"
@@ -137,8 +137,8 @@
                     <div><input type="hidden" name="previewQrKeyWord" id="previewQrKeyWord" :value="`${previewQR}`" ></div>
                     <div class="flex flex-col items-center justify-center">
                         
-                        <vue-qrcode class="w-56" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
-                        <vue-qrcode @ready="onReady" class="hidden" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode class="w-56" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR.keyword}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode @ready="onReady" class="hidden" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR.keyword}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
                         
                         <a
                             v-if="!isEditing && !previewQR.qrLink"
@@ -170,8 +170,14 @@
                         />
                         <span class="text-red-500">{{ qrCodeError }}</span>
 
-                        <span v-if="!isEditing" class="edit-url-click cursor-pointer" @click="toggleEditing">Edit</span>
-                        <button v-if="isEditing" class="edit-url-click" @click="saveChanges">Save</button>
+                        <!--
+                            let's hide this for now. 
+                            changing the actual qr code is dangerous as it may have been printed on packages.
+                            we'd only need to change the domain if we ever change it, and it could be done globally.
+
+                            <span v-if="!isEditing" class="edit-url-click cursor-pointer" @click="toggleEditing">Edit</span>
+                            <button v-if="isEditing" class="edit-url-click" @click="saveChanges">Save</button>
+                        -->
 
                     </div>
                 </template>
@@ -201,7 +207,7 @@
                             <span class="text-red-500">{{ titleError }}</span>
                         </div>
 
-                       <div class="flex flex-col w-full" v-if="codes.length">
+                       <div class="flex flex-col w-full" v-if="codes?.length">
                             <label for="">Parent</label>
                             <VueMultiselect
                                 v-model="form.parent_id"
@@ -264,7 +270,7 @@
                 </template>
 
                 <template #footer>
-                    <div v-if="project.sources.length">
+                    <div v-if="project.sources?.length">
                         <button @click="save" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
                         <button @click="close" class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>
                     </div>
@@ -347,7 +353,7 @@
                 </template>
 
                 <template #footer>
-                    <div v-if="project.sources.length">
+                    <div v-if="project.sources?.length">
                         <button v-if="!savingBulk" @click="saveBulk" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Save</button>
                         <button v-else class="text-white py-2 px-4 mr-2 font-semibold cursor-wait bg-ms-magenta-110">Generating...</button>
                         <button  @click="close" class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30">Cancel</button>

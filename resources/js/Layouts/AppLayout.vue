@@ -105,8 +105,16 @@
                                                     Switch Projects
                                                 </div>
 
+                                                <input
+                                                    type="text" 
+                                                    placeholde="Filter Projects" 
+                                                    class="w-full px-4 py-3 placeholder:text-ms-gray-60 text-sm border-0 border-t border-b" 
+                                                    v-model="filteredSearch"
+                                                    placeholder="Type to filter projects..."
+                                                />
+
                                                 <div class="h-96 overflow-hidden overflow-y-auto">
-                                                <template v-for="project in $page.props.user.projects_list" :key="project.id">
+                                                <template v-for="project in filteredProjects" :key="project.id">
                                                     <form @submit.prevent="switchToProject(project)">
                                                         <jet-dropdown-link as="button">
                                                             <div class="flex items-center">
@@ -344,7 +352,8 @@
                 moment,
                 showingNavigationDropdown: false,
                 trigger: false,
-                betaWarning: false
+                betaWarning: false,
+                filteredSearch: '',
             }
         },
 
@@ -356,6 +365,16 @@
         },  
 
         computed: {
+            filteredProjects(){
+                if(this.filteredSearch){
+                    return this.$page.props.user.projects_list.filter(project => {
+                        return project.name.toLowerCase().includes(this.filteredSearch.toLowerCase())
+                    })
+                }
+                else{
+                    return this.$page.props.user.projects_list
+                }
+            },
             menuAnalytics(){
                 if (this.$page.props.modules.some(e => e.name === 'analytics')) return true;
             },

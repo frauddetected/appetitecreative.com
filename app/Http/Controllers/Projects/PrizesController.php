@@ -42,4 +42,12 @@ class PrizesController extends Controller
             return redirect()->back()->with('status','Prize added successfully.');
         }
     }
+
+    public function actions()
+   {
+        if(request('delPrize')):
+            Prize::find(request('delPrize'))->delete();
+            return redirect()->back()->with('status','Prize deleted successfully!');
+        endif;
+    } 
 }

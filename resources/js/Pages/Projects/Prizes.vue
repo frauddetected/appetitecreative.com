@@ -45,7 +45,9 @@
                                 <td>{{ prize.title }}</td>
                                 <td>{{ prize.periodicity }}</td>
                                 <td>{{ prize.limit }}</td>
-                                <td></td>
+                                <td>
+                                    <i @click="delPrize(prize.id)" class="fas fa-trash text-secondary"></i>
+                                </td>
                             </tr>
                         </table>
 
@@ -138,6 +140,9 @@
                         this.prizes = this.project.prizes                    
                     }
                 })
+            },
+            delPrize(id){
+                this.$inertia.post(route('projects.prizes.actions', { delPrize: id }))
             },
             close(){
                 this.addNewPrize = false

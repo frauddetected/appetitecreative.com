@@ -201,6 +201,11 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function (
         return App::make('App\Http\Controllers\Dashboard\\' . $customController)->exportLeaderboard();
     })->name('export.leaderboard');
 
+    Route::get('/export/hearts', function () {
+        $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
+        return App::make('App\Http\Controllers\Dashboard\\' . $customController)->exportHearts();
+    })->name('export.hearts');
+
     Route::get('/insights', function () {
         $customController = current_project()->controller ? 'Projects\\' . current_project()->controller : 'MainController';
         return App::make('App\Http\Controllers\Dashboard\\' . $customController)->insights();
@@ -275,6 +280,7 @@ Route::group(['domain' => env('DOMAIN_APP'), 'middleware' => 'auth'], function (
         /* Prizes */
         Route::get('/view/prizes', [PrizesController::class, 'view'])->name('projects.prizes.view');
         Route::post('/view/prizes', [PrizesController::class, 'store'])->name('projects.prizes.store');
+        Route::post('/view/prizes/actions', [PrizesController::class, 'actions'])->name('projects.prizes.actions');
 
         /* Articles */
         Route::get('/view/articles', [ArticlesController::class, 'view'])->name('projects.articles.view');
