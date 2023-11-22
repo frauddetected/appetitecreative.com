@@ -115,6 +115,9 @@
                                 <td v-else class="text-xs">
                                     <a target="_blank" class="text-ms-magenta-10" :href="`https://query.appetite.link/api/qrcodes/${project_id}/view?type=csv?filter=${code.title.replace(' ', '+')}`">CSV</a>
                                 </td>
+                                <td v-if="!code.is_unique">
+                                    <i @click="delCode(code.id)" class="fas fa-trash text-ms-gray-80 hover:text-red-400"></i>
+                                </td>
                             </tr>
                         </table>
 
@@ -460,6 +463,10 @@
                 this.qrLink = code .qr_link;
                 this.isEditing = false;
                 this.qrCodeError = '';
+            },
+            delCode(id){
+                let confirm = window.confirm('Are you sure you want to delete this QR code?');
+                if(confirm) this.$inertia.post(route('projects.qr.actions', { delCode: id }))
             },
             toggleEditing() {
                 this.isEditing = !this.isEditing;
