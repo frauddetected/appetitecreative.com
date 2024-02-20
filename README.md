@@ -1,45 +1,23 @@
-# Appetite Link
 
-### Laravel APIs + Vue Dashboard
-Url: https://app.appetite.link
+# appetitecreative.com
 
-This web app was built following standard Laravel + Vue scaffolding with Inertia.js
-https://laravel.com/docs/9.x/frontend
+This repository belongs to fraud client who did wanted to pay invoice and run business. It's a partying gift and all are invited to
 
-```
-composer install
-npm install
-```
+1. hack
+2. break
+3. use for their own startup
+4. use client base to kickstart
+5. keeping developer community clean from such people.
 
-Build the assets
+### Context
+Client was given timesheet 7 times, and invoice 4 times,
 
-```
-npm prod
-```
-
-### SQL / Database Dump
-Can be downloaded here:
-https://drive.google.com/file/d/15Z4P33sYHbSQyNmydZd7S1QC6kqCcIGe/view?usp=sharing
-
-### FTP Details (Prod)
-Can be found in the .vscode folder
-
-### phpmyadmin
-https://four.appetitecreative.com/RRupbzsqM0
-the database details can be found on the .env file in the server (after s/ftp connection)
-
-### Setup
-
-This is quite a old setup and we only have a server
-
-The ftp details are connected to the production server
-Typically you can build the assets (npm run build) and simply upload any files over there after local testing
-
-### Notes
-
-- Need to setup local domains to access as app.appetitelink:8080
-
-127.0.0.1    go.appetitelink
-127.0.0.1    app.appetitelink
-127.0.0.1    query.appetitelink
-127.0.0.1    share.appetitelink
+- she delayed it 2 months.
+- Then she said a horse ran over her and she was hospitalized
+- Then she said the code is not working
+- Then she said other developer working on it is not able to fix something
+- I still asked her that I can support even try to match with one of my friend as her manager left her, I presume for the same reason
+- She kept ignoring it
+- I decided to go live with all his code and database
+- She tried to threaten me with NDA and Legal notice, I secured my side from legally and now willing to expose her.
+- If you experienced such shit ever connect with me and lets bring down such fraud people from market.
