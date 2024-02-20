@@ -107,7 +107,6 @@
                                                     <button class="border border-black px-8 py-1 hover:bg-gray-200 rounded-sm mr-2" v-else @click="code.details.push({param: '', value: ''})">Add</button>
                                                     <button class="border border-black px-8 py-1 hover:bg-green-200 rounded-sm mr-auto" @click="saveDetails(code)">Save</button>
                                                 </div>
-
                                             </div>
                                         </template>
                                     </VDropdown>
@@ -140,25 +139,25 @@
                     <div><input type="hidden" name="previewQrKeyWord" id="previewQrKeyWord" :value="`${previewQR}`" ></div>
                     <div class="flex flex-col items-center justify-center">
                         
-                        <vue-qrcode class="w-56" :value="`${defaultQRUrl}${previewQR}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
-                        <vue-qrcode @ready="onReady" class="hidden" :value="`${defaultQRUrl}${previewQR}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode class="w-56" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR.keyword}`" tag="img" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
+                        <vue-qrcode @ready="onReady" class="hidden" :value="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR.keyword}`" tag="svg" :options="{ width: 1024, margin: 0, color: { dark: darkColor, light: lightColor } }"></vue-qrcode>
                         
                         <a
-                            v-if="!isEditing && !qrLink"
-                            :href="`${defaultQRUrl}${previewQR}`"
+                            v-if="!isEditing && !previewQR.qrLink"
+                            :href="`${defaultQRUrl}${previewQR.keyword}`"
                             class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs"
                             target="_blank"
                         >
-                            {{ `${defaultQRUrl}${previewQR}` }}
+                            {{ `${defaultQRUrl}${previewQR.keyword}` }}
                         </a>
 
                         <a
-                            v-if="!isEditing && qrLink"
-                            :href="(qrLink !== null) ? `${qrLink}` : `${defaultQRUrl}${previewQR}`"
+                            v-if="!isEditing && previewQR.qrLink"
+                            :href="(previewQR.qrLink !== null) ? `${previewQR.qrLink}` : `${defaultQRUrl}${previewQR.keyword}`"
                             class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs"
                             target="_blank"
                         >
-                            {{ qrLink }}
+                            {{ previewQR.qrLink }}
                         </a>
 
                         <input
@@ -166,15 +165,21 @@
                             type="text"
                             name="qr_url"
                             class="mt-2 hover:bg-ms-gray-20 border px-4 py-2 border-black text-xs user-url"
-                            :value="isEditing ? (updatedQrCode ? updatedQrCode : `${defaultQRUrl}${previewQR}`) : (qrLink ? qrLink : `${defaultQRUrl}${previewQR}`)"
+                            :value="isEditing ? (updatedQrCode ? updatedQrCode : `${defaultQRUrl}${previewQR.keyword}`) : (previewQR.qrLink ? previewQR.qrLink : `${defaultQRUrl}${previewQR.keyword}`)"
                             id="editableUserUrl"
                             :readonly="!isEditing"
                             @input="updateUserUrl"
                         />
                         <span class="text-red-500">{{ qrCodeError }}</span>
 
-                        <span v-if="!isEditing" class="edit-url-click cursor-pointer" @click="toggleEditing">Edit</span>
-                        <button v-if="isEditing" class="edit-url-click" @click="saveChanges">Save</button>
+                        <!--
+                            let's hide this for now. 
+                            changing the actual qr code is dangerous as it may have been printed on packages.
+                            we'd only need to change the domain if we ever change it, and it could be done globally.
+
+                            <span v-if="!isEditing" class="edit-url-click cursor-pointer" @click="toggleEditing">Edit</span>
+                            <button v-if="isEditing" class="edit-url-click" @click="saveChanges">Save</button>
+                        -->
 
                     </div>
                 </template>
@@ -183,7 +188,7 @@
                     <ColorPicker color="#000000" className="mr-2" v-model="darkColor" />
                     <ColorPicker color="#ffffff" className="mr-auto" v-model="lightColor" />
                     
-                    <a id="download" :download="previewQR" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Download</a>
+                    <a id="download" :download="previewQR.keyword" class="text-white py-2 px-4 mr-2 font-semibold hover:bg-ms-cyan-120 bg-ms-cyan-110">Download</a>
                     <button class="py-2 px-4 font-semibold border border-ms-gray-160 text-ms-gray-160 hover:bg-ms-gray-30" @click="close">Cancel</button>
 
                 </template>
@@ -204,7 +209,7 @@
                             <span class="text-red-500">{{ titleError }}</span>
                         </div>
 
-                       <div class="flex flex-col w-full" v-if="codes.length">
+                       <div class="flex flex-col w-full" v-if="codes?.length">
                             <label for="">Parent</label>
                             <VueMultiselect
                                 v-model="form.parent_id"
@@ -458,9 +463,7 @@
 
         methods: {
             previewQRModal(code) {
-                // this.previewQR = { keyword: code.keyword, qrLink: code.qr_link };
-                this.previewQR=code.keyword
-                this.qrLink = code .qr_link;
+                this.previewQR = { keyword: code.keyword, qrLink: code.qr_link };
                 this.isEditing = false;
                 this.qrCodeError = '';
             },
@@ -483,7 +486,7 @@
                     return urlRegex.test(url);
                 }
 
-                const existingKey = `${this.previewQR}`;
+                const existingKey = `${this.previewQR.keyword}`;
                 const newUrl = $('#editableUserUrl').val();
 
                 if(isValidURL(newUrl)){

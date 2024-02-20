@@ -64,6 +64,18 @@
                             },
                         },
                         { data: 'plan_type', title: 'Plan Type' }, // Column for user created_at
+                        {
+                            data: 'id',
+                            title: 'Action',
+                            render: function (data, type, row) {
+                                var subscriptionStatus = (row.overwrite_subscription === 'yes') ? "checked" : "";
+                                var buttonClass = (row.overwrite_subscription === 'yes') ? "!bg-green-500 subscriber-button on" : "subscriber-button off";
+
+                                var sliderClass = (row.overwrite_subscription === 'yes') ? "!bg-green-500" : "";
+
+                                return `<label class="switch"><input type="checkbox" ${subscriptionStatus}  class="${buttonClass}" data-user-id="${data}"><span class="${sliderClass} slider round"></span></label>`;
+                            },
+                        },
                     ],
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 });
